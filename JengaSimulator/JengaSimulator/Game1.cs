@@ -33,9 +33,9 @@ namespace PatrickModafferiA3
         float zoom = 0;
 
         bool pressed;
-        public enum states { box, pause, play, main1, victory };
-        states state = states.box;
-        states question = states.main1;
+        public enum states { box = 0, pause, play, main1, victory , night, day, instructions, last };
+        states state = states.day;
+        states gameState = states.play;
         Keys previousKey;
 
         ParticleSystem Stars = new Stars();
@@ -48,8 +48,8 @@ namespace PatrickModafferiA3
 
             Stars.content = Content;
             Fireworks.content = Content;
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+          //  graphics.PreferredBackBufferWidth = 800;
+          //  graphics.PreferredBackBufferHeight = 600;
             pressed = false;
         }
 
@@ -103,12 +103,25 @@ namespace PatrickModafferiA3
             cameraMotion(keyboard);
             handleGameState(keyboard);
 
-            Stars.update(gameTime.ElapsedGameTime.Milliseconds);
-            
-            if (question == states.victory)
+            //Game state Updates
+            if (gameState == states.play)
+            {
+            }
+            else if (gameState == states.victory)
             {
                 Fireworks.update(gameTime.ElapsedGameTime.Milliseconds);
             }
+
+            //Time of day Updates
+            if (state == states.night)
+            {
+                Stars.update(gameTime.ElapsedGameTime.Milliseconds);
+            }
+            else
+            {
+                //update whatever happens only in day time
+            }
+
             base.Update(gameTime);
         }
 
@@ -118,32 +131,59 @@ namespace PatrickModafferiA3
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            
-            Stars.draw(view, projection);
-
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);              
-            spriteBatch.DrawString(font, "STAR SYSTEM", new Vector2(5, 5), Color.White);
-            spriteBatch.DrawString(font, "Press Space to go to Q2", new Vector2(5, 550), Color.White);
-            
-            if (question == states.victory)
+            if (state == states.night)
             {
-
+                GraphicsDevice.Clear(Color.Black);
                 Stars.draw(view, projection);
-                Fireworks.draw(view, projection);
-
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);              
-                spriteBatch.DrawString(font, "FIREWORKS", new Vector2(5, 5), Color.White);
-                spriteBatch.DrawString(font, "Press Space to go to Q1", new Vector2(5, 550), Color.White);
+            }
+            else
+            {
+                GraphicsDevice.Clear(Color.Blue);
+                //Add some rain-snow logic
             }
 
-            spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(5, 25), Color.White);
-            spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(5, 45), Color.White);
-            spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(5, 65), Color.White);
-            spriteBatch.DrawString(font, "X to reset camera", new Vector2(5, 85), Color.White);
-            spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(5, 105), Color.White);
+            if (gameState == states.play || gameState == states.pause || gameState == states.instructions)
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+                    spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(5, 5), Color.White);
+                    spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(5, 25), Color.White);
+                spriteBatch.End();
+            }
+            else if (gameState == states.main1)
+            {
 
-            spriteBatch.End();
+            } 
+            else if (gameState == states.victory)
+            {
+                Fireworks.draw(view, projection);
+            }
+
+            if (gameState == states.pause)
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+                spriteBatch.DrawString(font, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 25, graphics.PreferredBackBufferHeight / 2), Color.White);
+                spriteBatch.Draw(smoke, new Vector2(0, 0), new Rectangle(0, 0, 2000, 2000), Color.FromNonPremultiplied(235, 235, 220, 75));
+                spriteBatch.End();
+            }
+            if (gameState == states.instructions)
+            {
+                int startInstruction = 105;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+                    spriteBatch.DrawString(font, "INSTRUCTIONS", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 10 + 25), Color.White);
+                    spriteBatch.Draw(smoke,
+                        new Rectangle((int)(graphics.PreferredBackBufferWidth / 10), (int)(graphics.PreferredBackBufferHeight/10), 
+                            (int)(graphics.PreferredBackBufferWidth - (graphics.PreferredBackBufferWidth / 5)),
+                            (int)(graphics.PreferredBackBufferHeight - (graphics.PreferredBackBufferHeight / 5))),
+                        new Rectangle(0,0,1000,1000), 
+                        Color.FromNonPremultiplied(235, 235, 220, 175));
+                    spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 5), Color.White);
+                    spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 35), Color.White);
+                    spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 65), Color.White);
+                    spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 95), Color.White);
+                    spriteBatch.DrawString(font, "X to reset camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White);
+                    spriteBatch.DrawString(font, "F/Shift + F toggle fireworks", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 155), Color.White);
+                spriteBatch.End();
+            }
             base.Draw(gameTime);
         }
 
@@ -227,80 +267,80 @@ namespace PatrickModafferiA3
             if (keyboardState.IsKeyDown(Keys.F11))
             {
                 graphics.ToggleFullScreen();
-                projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(80), 1980 / 720, 1, 300);
-                graphics.PreferredBackBufferWidth = 1980;
+                projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(80), 1280 / 720, 1, 300);
+                graphics.PreferredBackBufferWidth = 1280;
                 graphics.PreferredBackBufferHeight = 720;
             }
 
-            if (question == states.main1)
+            if (keyboardState.IsKeyDown(Keys.F))
             {
-                if (keyboardState.IsKeyDown(Keys.D2))
+                gameState = states.play;
+            }
+            if (keyboardState.IsKeyDown(Keys.F) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                gameState = states.victory;
+            }
+
+            if (gameState == states.main1)
+            {
+                if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
                 {
-                    state = states.box;
-                }
-                if (keyboardState.IsKeyDown(Keys.D3))
-                {
-                    state = states.pause;
-                }
-                if (keyboardState.IsKeyDown(Keys.D4))
-                {
-                    state = states.play;
-                }
-                if (keyboardState.IsKeyDown(Keys.D5) && previousKey != Keys.D5)
-                {
-                    previousKey = Keys.D5;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D7) && previousKey != Keys.D7)
-                {                   
-                    previousKey = Keys.D6;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D6) && previousKey != Keys.D6)
-                {
-                    previousKey = Keys.D7;
-                }
-                else if (keyboardState.IsKeyDown(Keys.D8) && previousKey != Keys.D8)
-                {
-                    previousKey = Keys.D8;
+                    pressed = true;
+                    gameState = states.play;
                 }
                 else
                 {
                     previousKey = Keys.D0;
                 }
             }
-            if (question == states.victory)
+            else if (gameState == states.victory)
             {
-                if (keyboardState.IsKeyDown(Keys.D1))
+                if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
                 {
-                }
-                if (keyboardState.IsKeyDown(Keys.D2))
-                { 
-                }
-                if (keyboardState.IsKeyDown(Keys.D3))
+                    pressed = true;
+                    gameState = states.main1;
+                }            
+            }
+            else if (gameState == states.pause)
+            {
+                if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
                 {
+                    pressed = true;
+                    gameState = states.play;
                 }
-                if (keyboardState.IsKeyDown(Keys.D4))
-                {                    
-                }
-                if (keyboardState.IsKeyDown(Keys.D5))
+                else if (keyboardState.IsKeyDown(Keys.I))
                 {
-                }
-                if (keyboardState.IsKeyDown(Keys.D6))
-                {
+                    gameState = states.instructions;
                 }
             }
-            if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
+            else if (gameState == states.instructions)
             {
-                pressed = true;
-                if (question == states.main1)
+                if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
                 {
-                    //view = Matrix.CreateLookAt(new Vector3(0, 0, 45f), Vector3.Zero, Vector3.UnitY);
-                    question = states.victory;
-
+                    pressed = true;
+                    gameState = states.pause;
+                } 
+            }
+            else if (gameState == states.play)
+            {
+                if (keyboardState.IsKeyDown(Keys.Space) && !pressed)
+                {
+                    pressed = true;
+                    gameState = states.pause;
                 }
-                else
+                else if (keyboardState.IsKeyDown(Keys.I))
                 {
-                    //view = Matrix.CreateLookAt(new Vector3(0, 0, 25f), cube.Center, Vector3.UnitY);
-                    question = states.main1;
+                    gameState = states.instructions;
+                }
+                if (keyboardState.IsKeyDown(Keys.G))
+                {
+                    state = states.night;
+                }
+                if (keyboardState.IsKeyDown(Keys.G) && 
+                    keyboardState.IsKeyDown(Keys.LeftShift))
+                {
+                    state = states.day;
                 }
             }
             if (keyboardState.IsKeyUp(Keys.Space))
