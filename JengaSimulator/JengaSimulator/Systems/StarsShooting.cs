@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace PatrickModafferiA3.Systems
+namespace JengaSimulator.Systems
 {
     class StarsShooting : ParticleSystem
     {

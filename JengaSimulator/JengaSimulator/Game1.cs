@@ -8,9 +8,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using PatrickModafferiA3.Systems;
+using JengaSimulator.Systems;
+using JengaSimulator;
 
-namespace PatrickModafferiA3
+namespace JengaSimulator
 {
     /// <summary>
     /// This is the main type for your game
@@ -22,8 +23,8 @@ namespace PatrickModafferiA3
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont font;
-        Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
-        Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(70), 800 / 600, 1, 300);
+        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
+        public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(70), 16 / 9, 1, 300);
 
         private Model ball;
         private Model stick;
@@ -35,11 +36,12 @@ namespace PatrickModafferiA3
         bool pressed;
         public enum states { box = 0, pause, play, main1, victory , night, day, instructions, last };
         states state = states.day;
-        states gameState = states.play;
+        states gameState = states.main1;
         Keys previousKey;
 
         ParticleSystem Stars = new Stars();
         ParticleSystem Fireworks = new Fireworks(new Vector3(0, GROUND_LEVEL, GROUND_LEVEL - 10));
+        CollisionManager controller;
 
         public Game1()
         {
@@ -80,7 +82,8 @@ namespace PatrickModafferiA3
             stick = Content.Load<Model>("ball");
             font = Content.Load<SpriteFont>("Score");
             smoke = Content.Load<Texture2D>("smoke");
-            // TODO: use this.Content to load your game content here
+
+            controller = new CollisionManager(Content);
         }
 
         /// <summary>
@@ -99,6 +102,8 @@ namespace PatrickModafferiA3
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            float timer = gameTime.ElapsedGameTime.Milliseconds;
+
             KeyboardState keyboard = Keyboard.GetState();
             cameraMotion(keyboard);
             handleGameState(keyboard);
@@ -106,16 +111,17 @@ namespace PatrickModafferiA3
             //Game state Updates
             if (gameState == states.play)
             {
+                controller.Update(timer);
             }
             else if (gameState == states.victory)
             {
-                Fireworks.update(gameTime.ElapsedGameTime.Milliseconds);
+                Fireworks.update(timer);
             }
 
             //Time of day Updates
             if (state == states.night)
             {
-                Stars.update(gameTime.ElapsedGameTime.Milliseconds);
+                Stars.update(timer);
             }
             else
             {
@@ -136,38 +142,45 @@ namespace PatrickModafferiA3
                 GraphicsDevice.Clear(Color.Black);
                 Stars.draw(view, projection);
             }
-            else
+            else if (state == states.day)
             {
                 GraphicsDevice.Clear(Color.Blue);
                 //Add some rain-snow logic
             }
-
-            if (gameState == states.play || gameState == states.pause || gameState == states.instructions)
+            
+            if (gameState == states.victory)
             {
+                Fireworks.draw(view, projection);
+            } 
+            if (gameState == states.play || gameState == states.pause || gameState == states.instructions || gameState == states.victory)
+            {
+                controller.Draw();
+
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(5, 5), Color.White);
                     spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(5, 25), Color.White);
                 spriteBatch.End();
             }
-            else if (gameState == states.main1)
-            {
-
-            } 
-            else if (gameState == states.victory)
-            {
-                Fireworks.draw(view, projection);
-            }
-
             if (gameState == states.pause)
             {
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
-                spriteBatch.DrawString(font, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 25, graphics.PreferredBackBufferHeight / 2), Color.White);
-                spriteBatch.Draw(smoke, new Vector2(0, 0), new Rectangle(0, 0, 2000, 2000), Color.FromNonPremultiplied(235, 235, 220, 75));
+                    spriteBatch.DrawString(font, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 25, graphics.PreferredBackBufferHeight / 2), Color.White);
+                    spriteBatch.DrawString(font, "(i)Instructions", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 2 + 30), Color.White);
+                    spriteBatch.Draw(smoke, new Vector2(0, 0), new Rectangle(0, 0, 2000, 2000), Color.FromNonPremultiplied(235, 235, 220, 75));
                 spriteBatch.End();
             }
+            if (gameState == states.main1)
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+                    spriteBatch.DrawString(font, "WELCOME TO JENGA", new Vector2(25, 25), Color.White);
+                    spriteBatch.DrawString(font, "The #1 (and only) Jenga Simulator in the WORLD!", new Vector2(25,55), Color.White);
+                    spriteBatch.DrawString(font, "Press Space to Begin", 
+                        new Vector2((graphics.PreferredBackBufferWidth / 2) - 105, graphics.PreferredBackBufferHeight / 2 + 30), Color.White);
+                spriteBatch.End();
+            } 
             if (gameState == states.instructions)
             {
-                int startInstruction = 105;
+                int startInstruction = 125;
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "INSTRUCTIONS", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 10 + 25), Color.White);
                     spriteBatch.Draw(smoke,
@@ -176,12 +189,13 @@ namespace PatrickModafferiA3
                             (int)(graphics.PreferredBackBufferHeight - (graphics.PreferredBackBufferHeight / 5))),
                         new Rectangle(0,0,1000,1000), 
                         Color.FromNonPremultiplied(235, 235, 220, 175));
-                    spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 5), Color.White);
-                    spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 35), Color.White);
-                    spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 65), Color.White);
-                    spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 95), Color.White);
-                    spriteBatch.DrawString(font, "X to reset camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White);
-                    spriteBatch.DrawString(font, "F/Shift + F toggle fireworks", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 155), Color.White);
+                    spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 5), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 25), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 45), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 65), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "X to reset camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 85), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "F/Shift + F toggle fireworks", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 105), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White, 0f, Vector2.Zero, 0.55f,SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
             base.Draw(gameTime);

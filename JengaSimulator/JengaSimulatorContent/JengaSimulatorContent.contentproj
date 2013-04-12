@@ -44,6 +44,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="grass.fbx">
+      <Name>grass</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
     <Compile Include="Score.spritefont">
       <Name>Score</Name>
       <Importer>FontDescriptionImporter</Importer>

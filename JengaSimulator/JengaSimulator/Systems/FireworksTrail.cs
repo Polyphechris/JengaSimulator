@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PatrickModafferiA3.Systems
+namespace JengaSimulator.Systems
 {
     class FireworksTrail : ParticleSystem
     {

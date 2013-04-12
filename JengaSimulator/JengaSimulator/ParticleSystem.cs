@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace PatrickModafferiA3
+namespace JengaSimulator
 {
     public abstract class ParticleSystem
     {

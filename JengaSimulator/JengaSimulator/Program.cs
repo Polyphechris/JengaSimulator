@@ -1,6 +1,6 @@
 using System;
 
-namespace PatrickModafferiA3
+namespace JengaSimulator
 {
 #if WINDOWS || XBOX
     static class Program

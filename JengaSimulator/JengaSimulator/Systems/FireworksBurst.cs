@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace PatrickModafferiA3.Systems
+namespace JengaSimulator.Systems
 {
     //Bursts that explode eventually in it's own set of particles
     // Explosion location is the source of this new particle system
