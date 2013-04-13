@@ -21,7 +21,7 @@ namespace JengaSimulator
         List<Vector4> impulses;
         List<Vector3> forces;
         float weight;
-        Vector3 color;
+        public Vector3 color;
         float alpha;
         
         //angular speeds
@@ -29,10 +29,12 @@ namespace JengaSimulator
         Vector3 a;
         Vector3 d;
         bool isStatic;
+        bool resting;
 
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
             isStatic = i;
+            resting = i;
             model = m;
             position = p;
             alpha = 1;
@@ -50,6 +52,7 @@ namespace JengaSimulator
             w = Vector3.Zero;
             impulses = new List<Vector4>();
             forces = new List<Vector3>();
+            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
         }
 
         public void Update(float time)
@@ -62,15 +65,21 @@ namespace JengaSimulator
             for (int i = 0; i < impulses.Count; ++i)
             {
                 impulses[i] += new Vector4(0, 0, 0, time);
-                if (impulses[i].Z > 100)
+                if (impulses[i].W > 50)
                 {
                     impulses.RemoveAt(i);
                 }
                 else
                 {
                     Vector3 J = new Vector3(impulses[i].X, impulses[i].Y, impulses[i].Z);
-                    acceleration += J;
+                    totalA += J;
                 }
+            }
+
+            //Check resting block and nullify vertical acceleration
+            if (resting)
+            {
+                totalA -= new Vector3(0, totalA.Y, 0);
             }
             w = w + a * time / 1000;
             d = d + w * time / 1000;
@@ -122,20 +131,24 @@ namespace JengaSimulator
                 float blockFront = position.Y + scale.Z;
                 float blockBack = position.Y - scale.Z;
 
-                float wallRight = block.position.X + 0.5f;
-                float wallLeft = block.position.X - 0.5f;
-                float wallTop = block.position.Y + 0.5f;
-                float wallBottom = block.position.Y - 0.5f;
-                float wallFront = block.position.Z + 0.5f;
-                float wallBack = block.position.Z - 0.5f;
+                float wallRight = block.position.X + block.scale.X;
+                float wallLeft = block.position.X - block.scale.X;
+                float wallTop = block.position.Y + block.scale.Y;
+                float wallBottom = block.position.Y - block.scale.Y;
+                float wallFront = block.position.Z + block.scale.Z;
+                float wallBack = block.position.Z - block.scale.Z;
+
 
                 Vector4 newImpulse = Vector4.Zero;
-                float magnitude = 1;
-                if (block.isStatic)
+                float magnitude = velocity.Length();
+                if (block.isStatic || block.resting)
                 {
                     magnitude = -acceleration.Y;
                     forces.Add(new Vector3(0, 1 * magnitude, 0));
+                    velocity = Vector3.Zero;
+                    resting = true;
                 }
+                magnitude = velocity.Length() + 1;
 
                 if (blockRight >= wallRight && blockLeft <= wallRight)
                 {

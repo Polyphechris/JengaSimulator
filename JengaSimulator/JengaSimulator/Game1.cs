@@ -23,8 +23,11 @@ namespace JengaSimulator
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont font;
-        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
-        public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(70), 16 / 9, 1, 300);
+        //Optimal Spot for viewing env.
+        //public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
+        //Optimal SPot for viewing tower
+        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, -10, 35), new Vector3(0, -35, -20), Vector3.UnitY);
+        public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
 
         private Model ball;
         private Model stick;
@@ -281,7 +284,7 @@ namespace JengaSimulator
             if (keyboardState.IsKeyDown(Keys.F11))
             {
                 graphics.ToggleFullScreen();
-                projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(80), 1280 / 720, 1, 300);
+                projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 1280 / 720, 1, 300);
                 graphics.PreferredBackBufferWidth = 1280;
                 graphics.PreferredBackBufferHeight = 720;
             }

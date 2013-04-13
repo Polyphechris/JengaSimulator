@@ -32,13 +32,30 @@ namespace JengaSimulator
         private void InitializeTower()
         {
             Blocks = new List<Block>();
-            Blocks.Add(new Block(new Vector3(0, -10, 0), new Vector3(2, 1, 1), 1, new Vector3(0.8f, 0.5f, 0.2f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, -14, 3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, -14, -3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(3, -10, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(-3, -10, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, -6, 3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, -6, -3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(3, -2, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(-3, -2, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, 2, 3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, 2, -3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(3, 6, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(-3, 6, 0), new Vector3(1, 1, 5), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, 10, 3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            Blocks.Add(new Block(new Vector3(0, 10, -3), new Vector3(5, 1, 1), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
         }
 
         public void Update(float time)
         {
             foreach (Block b in Blocks)
             {
+                if (b.acceleration.X.Equals(float.NaN))
+                {
+                    b.color = Vector3.Zero;
+                }
                 b.Update(time);
                 Collision(b, time);
             }
