@@ -18,18 +18,21 @@ namespace JengaSimulator
         public Vector3 acceleration;
 
         public Vector3 scale;
-        List<Vector4> Impulses;
+        List<Vector4> impulses;
+        List<Vector3> forces;
         float weight;
         Vector3 color;
         float alpha;
-
+        
         //angular speeds
         Vector3 w;
         Vector3 a;
-        Vector3 d; 
+        Vector3 d;
+        bool isStatic;
 
-        public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool isStatic)
+        public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
+            isStatic = i;
             model = m;
             position = p;
             alpha = 1;
@@ -45,17 +48,37 @@ namespace JengaSimulator
             d = Vector3.Zero;
             a = Vector3.Zero;
             w = Vector3.Zero;
-            Impulses = new List<Vector4>();
+            impulses = new List<Vector4>();
+            forces = new List<Vector3>();
         }
 
         public void Update(float time)
         {
+            Vector3 totalA = acceleration;
+            foreach (Vector3 f in forces)
+            {
+                totalA += f;
+            }
+            for (int i = 0; i < impulses.Count; ++i)
+            {
+                impulses[i] += new Vector4(0, 0, 0, time);
+                if (impulses[i].Z > 100)
+                {
+                    impulses.RemoveAt(i);
+                }
+                else
+                {
+                    Vector3 J = new Vector3(impulses[i].X, impulses[i].Y, impulses[i].Z);
+                    acceleration += J;
+                }
+            }
             w = w + a * time / 1000;
             d = d + w * time / 1000;
-            velocity = velocity + acceleration * time/1000;
+            velocity = velocity + totalA * time / 1000;
             position = position + velocity * time/1000;
 
-            world =  Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            forces = new List<Vector3>();
         }
 
         public void Draw()
@@ -68,7 +91,7 @@ namespace JengaSimulator
                     effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                     effect.EmissiveColor = color;
-                    effect.World = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
+                    effect.World = world;
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;
                     effect.Alpha = alpha;
@@ -77,9 +100,110 @@ namespace JengaSimulator
             }
         }
 
+        public bool Collides(Block b1)
+        {
+            if(UpdateBoundingBox(model, world).Intersects(UpdateBoundingBox(b1.model, b1.world)))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void ResolveCollision(Block block)
         {
+            if (!isStatic)
+            {
+                //Force can be one of 4 directions
+                //Figure out which face of the cube we hit
+                float blockRight = position.X + scale.X;
+                float blockLeft = position.X - scale.X;
+                float blockTop = position.Y + scale.Y;
+                float blockBottom = position.Y - scale.Y;
+                float blockFront = position.Y + scale.Z;
+                float blockBack = position.Y - scale.Z;
 
+                float wallRight = block.position.X + 0.5f;
+                float wallLeft = block.position.X - 0.5f;
+                float wallTop = block.position.Y + 0.5f;
+                float wallBottom = block.position.Y - 0.5f;
+                float wallFront = block.position.Z + 0.5f;
+                float wallBack = block.position.Z - 0.5f;
+
+                Vector4 newImpulse = Vector4.Zero;
+                float magnitude = 1;
+                if (block.isStatic)
+                {
+                    magnitude = -acceleration.Y;
+                    forces.Add(new Vector3(0, 1 * magnitude, 0));
+                }
+
+                if (blockRight >= wallRight && blockLeft <= wallRight)
+                {
+                    newImpulse = new Vector4(1, 0, 0, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+                if (blockRight >= wallLeft && blockLeft <= wallLeft)
+                {
+                    newImpulse = new Vector4(-1, 0, 0, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+                if (blockTop >= wallTop && blockBottom <= wallTop)
+                {
+                    newImpulse = new Vector4(0, 1, 0, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+                if (blockTop >= wallBottom && blockBottom <= wallBottom)
+                {
+                    newImpulse = new Vector4(0, -1, 0, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+                if (blockFront >= wallFront && blockBack <= wallFront)
+                {
+                    newImpulse = new Vector4(0, 0, 1, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+                if (blockFront >= wallBack && blockBack <= wallBack)
+                {
+                    newImpulse = new Vector4(0, 0, -1, 0);
+                    impulses.Add(newImpulse * magnitude);
+                }
+            }
+        }
+
+        //Method obtained from online discussion boards at Stack Overflow
+        //http://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
+        protected BoundingBox UpdateBoundingBox(Model model, Matrix worldTransform)
+        {
+            // Initialize minimum and maximum corners of the bounding box to max and min values
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+            // For each mesh of the model
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                {
+                    // Vertex buffer parameters
+                    int vertexStride = meshPart.VertexBuffer.VertexDeclaration.VertexStride;
+                    int vertexBufferSize = meshPart.NumVertices * vertexStride;
+
+                    // Get vertex data as float
+                    float[] vertexData = new float[vertexBufferSize / sizeof(float)];
+                    meshPart.VertexBuffer.GetData<float>(vertexData);
+
+                    // Iterate through vertices (possibly) growing bounding box, all calculations are done in world space
+                    for (int i = 0; i < vertexBufferSize / sizeof(float); i += vertexStride / sizeof(float))
+                    {
+                        Vector3 transformedPosition = Vector3.Transform(new Vector3(vertexData[i], vertexData[i + 1], vertexData[i + 2]), worldTransform);
+
+                        min = Vector3.Min(min, transformedPosition);
+                        max = Vector3.Max(max, transformedPosition);
+                    }
+                }
+            }
+
+            // Create and return bounding box
+            return new BoundingBox(min, max);
         }
     }
 }

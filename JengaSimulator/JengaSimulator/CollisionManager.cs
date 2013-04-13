@@ -40,8 +40,10 @@ namespace JengaSimulator
             foreach (Block b in Blocks)
             {
                 b.Update(time);
+                Collision(b, time);
             }
             Ground.Update(time);
+            platform.Update(time);
         }
 
         public void Draw()
@@ -54,41 +56,28 @@ namespace JengaSimulator
             platform.Draw();
         }
 
-
-        //Method obtained from online discussion boards at Stack Overflow
-        //http://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
-        protected BoundingBox UpdateBoundingBox(Model model, Matrix worldTransform)
+        private void Collision(Block b, float time)
         {
-            // Initialize minimum and maximum corners of the bounding box to max and min values
-            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
-            // For each mesh of the model
-            foreach (ModelMesh mesh in model.Meshes)
+            foreach (Block b1 in Blocks)
             {
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                if (b1 != b)
                 {
-                    // Vertex buffer parameters
-                    int vertexStride = meshPart.VertexBuffer.VertexDeclaration.VertexStride;
-                    int vertexBufferSize = meshPart.NumVertices * vertexStride;
-
-                    // Get vertex data as float
-                    float[] vertexData = new float[vertexBufferSize / sizeof(float)];
-                    meshPart.VertexBuffer.GetData<float>(vertexData);
-
-                    // Iterate through vertices (possibly) growing bounding box, all calculations are done in world space
-                    for (int i = 0; i < vertexBufferSize / sizeof(float); i += vertexStride / sizeof(float))
+                    if (b.Collides(b1))
                     {
-                        Vector3 transformedPosition = Vector3.Transform(new Vector3(vertexData[i], vertexData[i + 1], vertexData[i + 2]), worldTransform);
-
-                        min = Vector3.Min(min, transformedPosition);
-                        max = Vector3.Max(max, transformedPosition);
+                        b.ResolveCollision(b1);
+                        b1.ResolveCollision(b);
                     }
                 }
             }
-
-            // Create and return bounding box
-            return new BoundingBox(min, max);
+            if (b.Collides(Ground))
+            {
+                b.ResolveCollision(Ground);
+            }
+            if (b.Collides(platform))
+            {
+                b.ResolveCollision(platform);
+            }
         }
+        
     }
 }
