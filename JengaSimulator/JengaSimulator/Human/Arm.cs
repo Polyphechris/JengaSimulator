@@ -21,8 +21,8 @@ namespace JengaSimulator.Human
         //Hand angular Constraints
         static float MIN_THETA_Z = 0;
         static float MAX_THETA_Z = 3 * (float)Math.PI/2;
-        static float MIN_THETA_X = 2.25f *(float)Math.PI/3;
-        static float MAX_THETA_X = 3.75f *(float)Math.PI/3;
+        static float MIN_THETA_X = 2f *(float)Math.PI/3;
+        static float MAX_THETA_X = 4f *(float)Math.PI/3;
 
         Wrist wrist;
         Hand hand;
@@ -137,6 +137,12 @@ namespace JengaSimulator.Human
                         velocity += new Vector3(10, 0, 0);
                 }
             }
+            //wrist.d.X = WrapAngle(wrist.d.X);
+            //wrist.d.Y = WrapAngle(wrist.d.Y);
+            //wrist.d.Z = WrapAngle(wrist.d.Z);
+            //hand.d.X = WrapAngle(hand.d.X);
+            //hand.d.Y = WrapAngle(hand.d.Y);
+            //hand.d.Z = WrapAngle(hand.d.Z);
         }
 
         private static float WrapAngle(float radians)

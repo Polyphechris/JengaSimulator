@@ -36,20 +36,50 @@ namespace JengaSimulator.Human
         public void update(float time)
         {
             d = d + w * time / 1000;
-            if(d.Z >= 0)
-            {
-                world = Matrix.CreateScale(scale) *
-                Matrix.CreateTranslation(-offset) * Matrix.CreateFromYawPitchRoll(d.Y, d.X, d.Z) * Matrix.CreateTranslation(offset)
+            //UpdateRotation(d, time);
+            world = Matrix.CreateScale(scale) *
+                Matrix.CreateTranslation(-offset) * Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(offset)
                 * Matrix.CreateTranslation(position);
-            }
-            else
+        }
+        private void UpdateRotation(Vector3 aPreviousRotation, float time)
+        {            
+            if (!w.Equals(Vector3.Zero))
             {
-                world = Matrix.CreateScale(scale) *
-                    Matrix.CreateTranslation(-offset) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(offset)
-                    * Matrix.CreateTranslation(position);
+                d.X = w.X / 10 * time / 1000 + aPreviousRotation.X;
+                d.X = RebalanceRotation(d.X);
+
+                //  Condition to fix the yaw/pitch problem
+                if (d.X > Math.PI/2 && d.X < 3*Math.PI/2)
+                {
+                    d.Y = w.Y / 10 * time / 1000 + aPreviousRotation.Y;
+                    d.Y = RebalanceRotation(d.Y);
+                }
+                else
+                {
+                    d.Y = -w.Y / 10 + aPreviousRotation.Y;
+                    d.Y = RebalanceRotation(d.Y);
+                }
             }
         }
-        
+
+        /// <summary>
+        /// Checks to see if rotations exceed 0-360 degrees
+        /// </summary>
+        private float RebalanceRotation(float aRotation)
+        {
+            float rebalancedRotation = aRotation;
+
+            if (aRotation > 2*Math.PI)
+            {
+                rebalancedRotation -= 2 * (float)Math.PI;
+            }
+            else if (aRotation < 0.0f)
+            {
+                rebalancedRotation += 2 * (float)Math.PI;
+            }
+            return rebalancedRotation;
+        }
+
         public void draw()
         {
             foreach (ModelMesh mesh in model.Meshes)
@@ -67,6 +97,19 @@ namespace JengaSimulator.Human
                 }
                 mesh.Draw();
             }
+        }
+
+        private static float WrapAngle(float radians)
+        {
+            while (radians < -MathHelper.Pi)
+            {
+                radians += MathHelper.TwoPi;
+            }
+            while (radians > MathHelper.Pi)
+            {
+                radians -= MathHelper.TwoPi;
+            }
+            return radians;
         }
 
         public Vector3 GetFingerTip()

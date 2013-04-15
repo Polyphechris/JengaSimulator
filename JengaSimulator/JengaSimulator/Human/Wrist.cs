@@ -28,6 +28,7 @@ namespace JengaSimulator.Human
             hand = h;
             scale = new Vector3(0.65f,0.65f,2);
             d.Z = (float)Math.PI / 2;
+            hand.d.Z = d.Z;
             h.position = position + new Vector3(0,0,WRIST_LENGHT/2);
         }
 
@@ -36,7 +37,8 @@ namespace JengaSimulator.Human
             d = d + w * time / 1000;
 
             hand.position = position + new Vector3(0, 0, WRIST_LENGHT / 2);
-            hand.d.Z = -d.Z;
+            if (hand.d.X < 0) hand.w.Z = w.Z;
+            else hand.w.Z = -w.Z;
             hand.update(time);
             world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);           
         }
