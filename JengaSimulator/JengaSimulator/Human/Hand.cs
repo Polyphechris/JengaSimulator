@@ -9,7 +9,7 @@ namespace JengaSimulator.Human
 {
     class Hand
     {
-        static float FINGER_LENGTH = 10;
+        static float FINGER_LENGTH = 12;
         public Model model;
         Matrix world;
 
@@ -18,13 +18,17 @@ namespace JengaSimulator.Human
         //angular speeds
         public Vector3 position;
         public Vector3 d;
-        Vector3 w;
+        public Vector3 w;
 
         Vector3 fingerTip;
         public Vector3 scale;
+        public Vector3 offset;
 
         public Hand()
         {
+            offset = new Vector3(0, 0, -3.75f);
+            w = Vector3.Zero;
+            d.Y = (float)Math.PI;
             alpha = 1f;
             scale = Vector3.One;
         }
@@ -32,7 +36,18 @@ namespace JengaSimulator.Human
         public void update(float time)
         {
             d = d + w * time / 1000;
-            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            if(d.Z >= 0)
+            {
+                world = Matrix.CreateScale(scale) *
+                Matrix.CreateTranslation(-offset) * Matrix.CreateFromYawPitchRoll(d.Y, d.X, d.Z) * Matrix.CreateTranslation(offset)
+                * Matrix.CreateTranslation(position);
+            }
+            else
+            {
+                world = Matrix.CreateScale(scale) *
+                    Matrix.CreateTranslation(-offset) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(offset)
+                    * Matrix.CreateTranslation(position);
+            }
         }
         
         public void draw()
@@ -44,7 +59,7 @@ namespace JengaSimulator.Human
                     effect.EnableDefaultLighting();
                     effect.SpecularColor = color;
                     effect.DiffuseColor = color;
-                    effect.EmissiveColor = color;
+                    //effect.EmissiveColor = color;
                     effect.World = world;
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;

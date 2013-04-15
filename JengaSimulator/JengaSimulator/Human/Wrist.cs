@@ -9,28 +9,34 @@ namespace JengaSimulator.Human
 {  
     class Wrist
     {
-        static float WRIST_LENGHT = 10;
+        static float WRIST_LENGHT = -12f;
         public Model model;
         Matrix world;
 
         public Vector3 color;
         public Vector3 position;
         public Vector3 d;
+        public Vector3 w;
         float alpha;
         Hand hand;
         public Vector3 scale;
 
         public Wrist(Hand h)
         {
+            w = Vector3.Zero;
             alpha = 1f;
             hand = h;
-            scale = Vector3.One;
+            scale = new Vector3(0.65f,0.65f,2);
+            d.Z = (float)Math.PI / 2;
             h.position = position + new Vector3(0,0,WRIST_LENGHT/2);
         }
 
         public void update(float time)
         {
+            d = d + w * time / 1000;
+
             hand.position = position + new Vector3(0, 0, WRIST_LENGHT / 2);
+            hand.d.Z = -d.Z;
             hand.update(time);
             world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);           
         }
@@ -45,7 +51,7 @@ namespace JengaSimulator.Human
                     effect.EnableDefaultLighting();
                     effect.SpecularColor = color;
                     effect.DiffuseColor = color;
-                    effect.EmissiveColor = color;
+                   // effect.EmissiveColor = color;
                     effect.World = world;
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;
