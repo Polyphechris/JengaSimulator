@@ -29,7 +29,7 @@ namespace JengaSimulator
         //Optimal Spot for viewing env.
         //public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
         //Optimal SPot for viewing tower
-        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, -10, 35), new Vector3(0, -35, -20), Vector3.UnitY);
+        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 35), new Vector3(0, -35, -20), Vector3.UnitY);
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
         public static Matrix rotation = Matrix.Identity;
 
