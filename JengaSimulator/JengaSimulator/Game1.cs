@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using JengaSimulator.Systems;
 using JengaSimulator;
+using JengaSimulator.Human;
 
 namespace JengaSimulator
 {
@@ -21,6 +22,8 @@ namespace JengaSimulator
         const float DEFAULT_CAMERA_DISTANCE = 75f;
         const float GROUND_LEVEL = -50f;
         GraphicsDeviceManager graphics;
+        Arm arm;
+
         SpriteBatch spriteBatch;
         SpriteFont font;
         //Optimal Spot for viewing env.
@@ -28,6 +31,7 @@ namespace JengaSimulator
         //Optimal SPot for viewing tower
         public static Matrix view = Matrix.CreateLookAt(new Vector3(0, -10, 35), new Vector3(0, -35, -20), Vector3.UnitY);
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
+        public static Matrix rotation = Matrix.Identity;
 
         private Model ball;
         private Model stick;
@@ -85,7 +89,7 @@ namespace JengaSimulator
             stick = Content.Load<Model>("ball");
             font = Content.Load<SpriteFont>("Score");
             smoke = Content.Load<Texture2D>("smoke");
-
+            arm = new Arm(Content);
             controller = new CollisionManager(Content);
         }
 
@@ -114,6 +118,7 @@ namespace JengaSimulator
             //Game state Updates
             if (gameState == states.play)
             {
+                arm.update(timer, keyboard);
                 controller.Update(timer);
             }
             else if (gameState == states.victory)
@@ -158,6 +163,7 @@ namespace JengaSimulator
             if (gameState == states.play || gameState == states.pause || gameState == states.instructions || gameState == states.victory)
             {
                 controller.Draw();
+                arm.draw();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(5, 5), Color.White);
@@ -210,25 +216,25 @@ namespace JengaSimulator
             {
                 view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
             }
-            if (keyboardState.IsKeyDown(Keys.W))
+            if (keyboardState.IsKeyDown(Keys.I))
             {
                 // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
                 angleX = -0.005f;
                 view = view * Matrix.CreateRotationX(angleX);                
             }
-            if (keyboardState.IsKeyDown(Keys.S))
+            if (keyboardState.IsKeyDown(Keys.K))
             {
                 // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
                 angleX = 0.005f;
                 view = view * Matrix.CreateRotationX(angleX);                
             }
-            if (keyboardState.IsKeyDown(Keys.D))
+            if (keyboardState.IsKeyDown(Keys.L))
             {
                 // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
                 angleX = 0.005f;
                 view = view * Matrix.CreateRotationY(angleX);                
             }
-            if (keyboardState.IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.J))
             {
                 // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
                 angleX = -0.005f;
@@ -246,6 +252,18 @@ namespace JengaSimulator
                 // view = Matrix.CreateLookAt(new Vector3(0, viewDist--, 10), new Vector3(0, 0, 0), Vector3.UnitY);
                 zoom = -0.5f;
                 view = view * Matrix.CreateTranslation(new Vector3(0, 0, zoom));
+            }
+            if (keyboardState.IsKeyDown(Keys.Z))
+            {
+                // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
+                angleX = -0.005f;
+                rotation = rotation * Matrix.CreateRotationY(angleX);
+            }
+            if (keyboardState.IsKeyDown(Keys.C))
+            {
+                // view = Matrix.CreateLookAt(new Vector3(0, viewDist++, 10), new Vector3(0, 0, 0), Vector3.UnitY);
+                angleX = 0.005f;
+                rotation = rotation * Matrix.CreateRotationY(angleX);
             }
             if (keyboardState.IsKeyDown(Keys.Up))
             {
@@ -345,10 +363,6 @@ namespace JengaSimulator
                 {
                     pressed = true;
                     gameState = states.pause;
-                }
-                else if (keyboardState.IsKeyDown(Keys.I))
-                {
-                    gameState = states.instructions;
                 }
                 if (keyboardState.IsKeyDown(Keys.G))
                 {

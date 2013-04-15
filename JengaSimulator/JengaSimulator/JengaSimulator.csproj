@@ -74,6 +74,9 @@
   <ItemGroup>
     <Compile Include="Block.cs" />
     <Compile Include="CollisionManager.cs" />
+    <Compile Include="Human\Arm.cs" />
+    <Compile Include="Human\Hand.cs" />
+    <Compile Include="Human\Wrist.cs" />
     <Compile Include="Particle.cs" />
     <Compile Include="ParticleSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

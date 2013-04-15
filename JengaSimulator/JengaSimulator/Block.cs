@@ -112,7 +112,7 @@ namespace JengaSimulator
                     effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                     effect.EmissiveColor = color;
-                    effect.World = world;
+                    effect.World = world * Game1.rotation;
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;
                     effect.Alpha = alpha;
