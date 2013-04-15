@@ -88,10 +88,11 @@ namespace JengaSimulator
                 }
             }
 
-            //Check resting block and nullify vertical acceleration
+            //Check resting block and nullify all acceleration
             if (resting)
             {
-                totalA -= new Vector3(0, totalA.Y, 0);
+                totalA = Vector3.Zero;
+                //totalA -= new Vector3(0, totalA.Y, 0);
             }
             w = w + a * time / 1000;
             d = d + w * time / 1000;
