@@ -28,7 +28,7 @@ namespace JengaSimulator.Human
             hand = h;
             scale = new Vector3(0.65f,0.65f,2);
             d.Z = (float)Math.PI / 2;
-            hand.d.Z = d.Z;
+            hand.d.Z = -d.Z;
             h.position = position + new Vector3(0,0,WRIST_LENGHT/2);
         }
 
@@ -51,7 +51,8 @@ namespace JengaSimulator.Human
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    effect.SpecularColor = color;
+                    effect.AmbientLightColor = new Vector3(0.3f);
+                   // effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                    // effect.EmissiveColor = color;
                     effect.World = world;

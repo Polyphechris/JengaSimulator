@@ -12,11 +12,11 @@ namespace JengaSimulator.Human
     class Arm
     {
         //Hand linear Constraints
-        static float MAX_HEIGHT = 0;
+        static float MAX_HEIGHT = -10;
         static float MAX_LATTERAL = 10;
         static float MAX_DEEP = 20;
         static float MIN_DEEP = 10;
-        static float MIN_HEIGHT = -40;
+        static float MIN_HEIGHT = -30;
 
         //Hand angular Constraints
         static float MIN_THETA_Z = 0;
@@ -51,7 +51,7 @@ namespace JengaSimulator.Human
 
         private void InitializeWrist()
         {
-            color = new Vector3(0.92f,0.67f,0.61f);
+            color = new Vector3(0.90f,0.66f,0.60f);
 
             hand = new Hand();
             hand.color = color;
@@ -96,22 +96,22 @@ namespace JengaSimulator.Human
                 if (keyboardState.IsKeyDown(Keys.A))
                 {
                     if (wrist.d.Z > MIN_THETA_Z)
-                        wrist.w += new Vector3(0, 0, -10);
+                        wrist.w += new Vector3(0, 0, -5);
                 }
                 if (keyboardState.IsKeyDown(Keys.W))
                 {
                     if (hand.d.Y < MAX_THETA_X)
-                        hand.w += new Vector3(0, 10, 0);
+                        hand.w += new Vector3(0, 5, 0);
                 }
                 if (keyboardState.IsKeyDown(Keys.S))
                 {
                     if (hand.d.Y > MIN_THETA_X)
-                        hand.w += new Vector3(0, -10, 0);
+                        hand.w += new Vector3(0, -5, 0);
                 }
                 if (keyboardState.IsKeyDown(Keys.D))
                 {
                     if (wrist.d.Z < MAX_THETA_Z)
-                        wrist.w += new Vector3(0, 0, 10);
+                        wrist.w += new Vector3(0, 0, 5);
                 }
             }
             else
