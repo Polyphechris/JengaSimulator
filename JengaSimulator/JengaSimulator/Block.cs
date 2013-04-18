@@ -14,20 +14,24 @@ namespace JengaSimulator
 
         //linear motion
         public Vector3 position;
+        public Vector3 previousPosition;
         public Vector3 velocity;
         public Vector3 acceleration;
+
+        //hack for rotation abotu an axis
+        public Vector3 offsetRotation;
 
         public Vector3 scale;
         List<Vector4> impulses;
         List<Vector3> forces;
         float weight;
         public Vector3 color;
-        float alpha;
+        public float alpha;
         
         //angular speeds
-        Vector3 w;
+        public Vector3 w;
         Vector3 a;
-        Vector3 d;
+        public Vector3 d;
         bool isStatic;
         bool resting;
 
@@ -35,6 +39,7 @@ namespace JengaSimulator
 
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
+            offsetRotation = Vector3.Zero;
             isStatic = i;
             resting = i;
             model = m;
@@ -54,20 +59,19 @@ namespace JengaSimulator
             w = Vector3.Zero;
             impulses = new List<Vector4>();
             forces = new List<Vector3>();
-            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(position);
         }
 
         public void Update(float time)
         {
-            if (restingBlock != null)
-            {
-                while (this.Collides(restingBlock))
-                {
-                    position.Y += 0.001f;
-                    world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
-                }
-            }
-            
+            //if (restingBlock != null)
+            //{
+            //    while (this.Collides(restingBlock))
+            //    {
+            //        position.Y += 0.001f;
+            //        world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            //    }
+            //}
 
             Vector3 totalA = acceleration;
             foreach (Vector3 f in forces)
@@ -88,18 +92,17 @@ namespace JengaSimulator
                 }
             }
 
-            //Check resting block and nullify all acceleration
-            if (resting)
-            {
-                totalA = Vector3.Zero;
-                //totalA -= new Vector3(0, totalA.Y, 0);
-            }
             w = w + a * time / 1000;
             d = d + w * time / 1000;
             velocity = velocity + totalA * time / 1000;
+
+            previousPosition = new Vector3(position.X, position.Y, position.Z);
             position = position + velocity * time/1000;
 
-            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
+            world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(-offsetRotation) * 
+                Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(offsetRotation) * 
+                Matrix.CreateTranslation(position);
+
             forces = new List<Vector3>();
         }
 
@@ -133,6 +136,8 @@ namespace JengaSimulator
 
         public void ResolveCollision(Block block)
         {
+            previousPosition = new Vector3(position.X, position.Y, position.Z);
+
             if (!isStatic)
             {
                 //Force can be one of 4 directions
@@ -154,25 +159,26 @@ namespace JengaSimulator
 
                 Vector4 newImpulse = Vector4.Zero;
                 float magnitude = velocity.Length();
+
                 if (block.isStatic || block.resting)
                 {
                     magnitude = -acceleration.Y;
                     forces.Add(new Vector3(0, 1 * magnitude, 0));
                     velocity = Vector3.Zero;
-                    resting = true;
+                    //resting = true;
                     if (restingBlock == null)
                     {
                         restingBlock = block;
                     }
                 }
-                magnitude = velocity.Length() + 1;
+                //magnitude = velocity.Length() + 1;
 
                 if (blockRight >= wallRight && blockLeft <= wallRight)
                 {
                     newImpulse = new Vector4(1, 0, 0, 0);
                     impulses.Add(newImpulse * magnitude);
                 }
-                if (blockRight >= wallLeft && blockLeft <= wallLeft)
+                if (blockLeft <= wallLeft && blockRight >= wallLeft)
                 {
                     newImpulse = new Vector4(-1, 0, 0, 0);
                     impulses.Add(newImpulse * magnitude);
@@ -234,6 +240,19 @@ namespace JengaSimulator
 
             // Create and return bounding box
             return new BoundingBox(min, max);
+        }
+
+        private static float WrapAngle(float radians)
+        {
+            while (radians < -MathHelper.Pi)
+            {
+                radians += MathHelper.TwoPi;
+            }
+            while (radians > MathHelper.Pi)
+            {
+                radians -= MathHelper.TwoPi;
+            }
+            return radians;
         }
     }
 }

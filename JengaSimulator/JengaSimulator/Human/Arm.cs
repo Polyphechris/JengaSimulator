@@ -30,6 +30,10 @@ namespace JengaSimulator.Human
         Model model;
         Matrix world;
 
+        Model BOX;
+        Matrix BoxWorld;
+        Block collisionBox;
+
         //linear motion
         public Vector3 position;
         public Vector3 velocity;
@@ -47,6 +51,9 @@ namespace JengaSimulator.Human
             position = new Vector3(0, -20, 0);
             Content = c;
             InitializeWrist();
+            collisionBox = new Block(position + new Vector3(0,0,-15), new Vector3(2,1, 5), 1, color, Content.Load<Model>("cube"),true);
+            collisionBox.alpha = 0.4f;
+            collisionBox.offsetRotation = new Vector3(0, 0, 5f);
         }
 
         private void InitializeWrist()
@@ -71,10 +78,17 @@ namespace JengaSimulator.Human
             position = position + velocity * time / 1000;
             wrist.update(time);
             wrist.position = position;
+            collisionBox.velocity = velocity;
+
+            if (hand.d.X < 0) hand.w.Z = -wrist.w.Z;
+            else hand.w.Z = wrist.w.Z;
+            collisionBox.w = hand.w;
+            collisionBox.Update(time);
         }
 
         public void draw()
         {
+            collisionBox.Draw();
             wrist.draw();
         }
 
