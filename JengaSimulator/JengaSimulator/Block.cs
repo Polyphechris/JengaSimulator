@@ -36,6 +36,7 @@ namespace JengaSimulator
         //on hand bounding boxes
         public bool onHand;
         bool resting;
+        public float specular;
 
         Vector3[][][] vertex;
 
@@ -43,6 +44,7 @@ namespace JengaSimulator
 
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
+            specular = 10;
             onHand = false;
             offsetRotation = Vector3.Zero;
             isStatic = i;
@@ -120,6 +122,7 @@ namespace JengaSimulator
                 {
                     effect.EnableDefaultLighting();
                     effect.SpecularColor = color;
+                    effect.SpecularPower = specular;
                     effect.DiffuseColor = color;
                     effect.EmissiveColor = color;
                     if (onHand)

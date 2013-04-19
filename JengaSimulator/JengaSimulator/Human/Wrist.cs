@@ -28,6 +28,7 @@ namespace JengaSimulator.Human
             hand = h;
             scale = new Vector3(0.65f,0.65f,2);
             d.Z = (float)Math.PI / 2;
+            d.X = (float)Math.PI;
             hand.d.Z = -d.Z;
             h.position = position + new Vector3(0,0,WRIST_LENGHT/2);
         }
@@ -37,10 +38,10 @@ namespace JengaSimulator.Human
             d = d + w * time / 1000;
 
             hand.position = position + new Vector3(0, 0, WRIST_LENGHT / 2);
-            if (hand.d.X < 0) hand.w.Z = w.Z;
-            else hand.w.Z = -w.Z;
+            if (hand.d.X < 0) hand.w.Z = -w.Z;
+            else hand.w.Z = w.Z;
             hand.update(time);
-            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);           
+            world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z + (float)Math.PI) * Matrix.CreateTranslation(position);           
         }
 
         public void draw()
@@ -51,7 +52,7 @@ namespace JengaSimulator.Human
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    effect.AmbientLightColor = new Vector3(0.3f);
+                    effect.AmbientLightColor = new Vector3(0.55f);
                    // effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                    // effect.EmissiveColor = color;

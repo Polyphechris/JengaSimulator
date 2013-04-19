@@ -7,12 +7,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JengaSimulator.Systems
 {
+    //Rockets shooting up
     class Fireworks : ParticleSystem
     {
         const int BURST_COUNT = 20;
         const int INITIAL_UP_VELOCITY = 8;
         const int INITIAL_Y_ACC = -10;
-        Random random;
+        const int RANDOMNESS = 1;
+        Random random = new Random();
 
         public Fireworks(Vector3 s)
         {
@@ -28,7 +30,6 @@ namespace JengaSimulator.Systems
 
         public void spawBurst(int count)
         {
-            random = new Random();
             for (int i = 0; i < count; ++i)
             {                
                 particles.Add(InitializeRocket(new Particle()));
@@ -81,6 +82,10 @@ namespace JengaSimulator.Systems
                 trails.ElementAt(i).update(time);
 
                 //Update and explode the rockets when needed
+
+                Vector3 randomOffset = new Vector3(random.Next(-RANDOMNESS, RANDOMNESS + 1), random.Next(-RANDOMNESS, RANDOMNESS + 1), 0);
+                particles.ElementAt(i).velocity += randomOffset * 0.5f;
+
                 particles.ElementAt(i).update(time);
                 if (currentP.velocity.Y <= 0.1f)
                 {
