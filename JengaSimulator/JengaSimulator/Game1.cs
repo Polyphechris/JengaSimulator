@@ -30,7 +30,7 @@ namespace JengaSimulator
         //Optimal Spot for viewing env.
         //public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
         //Optimal SPot for viewing tower
-        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 10, 25), new Vector3(0, -35, -20), Vector3.UnitY);
+        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 20, 30), new Vector3(0, -40, -20), Vector3.UnitY);
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
         public static Matrix rotation = Matrix.Identity;
 
@@ -197,14 +197,27 @@ namespace JengaSimulator
             if (gameState == states.victory)
             {
                 Fireworks.draw(view, projection);
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
+                //spriteBatch.Draw(smoke,
+                //    new Rectangle((int)(graphics.PreferredBackBufferWidth / 4), (int)(graphics.PreferredBackBufferHeight / 4),
+                //        (int)(graphics.PreferredBackBufferWidth - (graphics.PreferredBackBufferWidth / 2)),
+                //        (int)(graphics.PreferredBackBufferHeight - (graphics.PreferredBackBufferHeight / 2))),
+                //    new Rectangle(0, 0, 1000, 1000),
+                //    Color.FromNonPremultiplied(235, 235, 220, 175)); 
+                spriteBatch.DrawString(font, "CONGRATULATIONS!", 
+                        new Vector2(15, 55), Color.White);
+                    spriteBatch.DrawString(font, "You have failed :D", 
+                        new Vector2(15, 75), Color.White);
+                spriteBatch.End();
             } 
             if (gameState == states.play || gameState == states.pause || gameState == states.instructions || gameState == states.victory)
             {
                 controller.Draw();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
-                    spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(5, 5), Color.White);
-                    spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(5, 25), Color.White);
+                    spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(10, 5), Color.White);
+                    spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(10, 25), Color.White);
                 spriteBatch.End();
             }
             if (gameState == states.pause)
