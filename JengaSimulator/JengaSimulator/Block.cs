@@ -33,12 +33,17 @@ namespace JengaSimulator
         Vector3 a;
         public Vector3 d;
         bool isStatic;
+        //on hand bounding boxes
+        public bool onHand;
         bool resting;
+
+        Vector3[][][] vertex;
 
         Block restingBlock;
 
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
+            onHand = false;
             offsetRotation = Vector3.Zero;
             isStatic = i;
             resting = i;
@@ -59,6 +64,7 @@ namespace JengaSimulator
             w = Vector3.Zero;
             impulses = new List<Vector4>();
             forces = new List<Vector3>();
+
             world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(position);
         }
 
@@ -116,7 +122,14 @@ namespace JengaSimulator
                     effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                     effect.EmissiveColor = color;
-                    effect.World = world * Game1.rotation;
+                    if (onHand)
+                    {
+                        effect.World = world;
+                    }
+                    else
+                    {
+                        effect.World = world * Game1.rotation;
+                    }
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;
                     effect.Alpha = alpha;

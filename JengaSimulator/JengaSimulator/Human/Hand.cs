@@ -23,6 +23,7 @@ namespace JengaSimulator.Human
         Vector3 fingerTip;
         public Vector3 scale;
         public Vector3 offset;
+
         List<Vector3> CollisionPoints;
         Model touchPoint;
 

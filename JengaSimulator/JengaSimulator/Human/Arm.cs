@@ -30,9 +30,10 @@ namespace JengaSimulator.Human
         Model model;
         Matrix world;
 
-        Model BOX;
+        //Palm + fingers
         Matrix BoxWorld;
         Block collisionBox;
+        List<Block> fingers;
 
         //linear motion
         public Vector3 position;
@@ -43,17 +44,38 @@ namespace JengaSimulator.Human
         float weight;
         public Vector3 color;
         float alpha;
+        bool showBoxes;
         ContentManager Content;
 
         public Arm(ContentManager c)
         {
+            showBoxes = false;
             alpha = 1f;
             position = new Vector3(0, -20, 0);
             Content = c;
             InitializeWrist();
-            collisionBox = new Block(position + new Vector3(0,0,-15), new Vector3(2,1, 5), 1, color, Content.Load<Model>("cube"),true);
+            
+            collisionBox = new Block(position + new Vector3(0,0,-12), new Vector3(2.25f,1.25f, 3), 1, color, Content.Load<Model>("cube"),false);
             collisionBox.alpha = 0.4f;
-            collisionBox.offsetRotation = new Vector3(0, 0, 5f);
+            collisionBox.onHand = true;
+            collisionBox.offsetRotation = new Vector3(0, 0, 2.5f);
+
+            fingers = new List<Block>();
+            Block b1 = new Block(position + new Vector3(-1.5f, 0, -17), new Vector3(0.5f, 0.5f, 3), 1, color, Content.Load<Model>("cube"), false);
+            b1.alpha = 0.4f;
+            b1.onHand = true;
+            b1.offsetRotation = new Vector3(1.5f, 0, 7.5f);
+            fingers.Add(b1);
+            Block b2 = new Block(position + new Vector3(0, 0, -17), new Vector3(0.5f, 0.5f, 3.2f), 1, color, Content.Load<Model>("cube"), false);
+            b2.alpha = 0.4f;
+            b2.onHand = true;
+            b2.offsetRotation = new Vector3(0, 0, 7.5f);
+            fingers.Add(b2);
+            Block b3 = new Block(position + new Vector3(1.5f, 0, -17), new Vector3(0.5f, 0.5f, 3), 1, color, Content.Load<Model>("cube"), false);
+            b3.alpha = 0.4f;
+            b3.onHand = true;
+            b3.offsetRotation = new Vector3(-1.5f, 0, 7.5f);
+            fingers.Add(b3);
         }
 
         private void InitializeWrist()
@@ -71,6 +93,16 @@ namespace JengaSimulator.Human
 
         public void update(float time, KeyboardState keyboardState)
         {
+
+            if (keyboardState.IsKeyDown(Keys.B))
+            {
+                showBoxes = false;
+            }
+            if (keyboardState.IsKeyDown(Keys.B) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                showBoxes = true;
+            }
             velocity = Vector3.Zero;
             wrist.w = Vector3.Zero;
             hand.w = Vector3.Zero;
@@ -78,18 +110,33 @@ namespace JengaSimulator.Human
             position = position + velocity * time / 1000;
             wrist.update(time);
             wrist.position = position;
-            collisionBox.velocity = velocity;
 
+            collisionBox.velocity = velocity;
             if (hand.d.X < 0) hand.w.Z = -wrist.w.Z;
             else hand.w.Z = wrist.w.Z;
             collisionBox.w = hand.w;
             collisionBox.Update(time);
+            foreach (Block b in fingers)
+            {
+                b.velocity = velocity;
+                if (hand.d.X < 0) hand.w.Z = -wrist.w.Z;
+                else hand.w.Z = wrist.w.Z;
+                b.w = hand.w;
+                b.Update(time);
+            }
         }
 
         public void draw()
         {
-            collisionBox.Draw();
-            wrist.draw();
+            if (showBoxes)
+            {
+                collisionBox.Draw();
+                foreach (Block b in fingers)
+                {
+                    b.Draw();
+                }
+            }
+            wrist.draw();           
         }
 
         private void HandleInput(KeyboardState keyboardState)
