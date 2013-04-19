@@ -40,10 +40,10 @@ namespace JengaSimulator
 
             Blocks = new List<Block>();
             Blocks.Add(new Block(new Vector3(0, -14, blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -14, -blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -14, 0), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+          //  Blocks.Add(new Block(new Vector3(0, -14, -blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+          //  Blocks.Add(new Block(new Vector3(0, -14, 0), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+          //  Blocks.Add(new Block(new Vector3(blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+          // Blocks.Add(new Block(new Vector3(0, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
             Blocks.Add(new Block(new Vector3(-blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
             //Blocks.Add(new Block(new Vector3(0, -6, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
             //Blocks.Add(new Block(new Vector3(0, -6, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
