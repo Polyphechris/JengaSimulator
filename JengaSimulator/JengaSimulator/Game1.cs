@@ -39,14 +39,19 @@ namespace JengaSimulator
         float angleX = 0;
         float angleY = 0;
         float zoom = 0;
-
+                
         bool pressed;
         public enum states { box = 0, pause, play, main1, victory , night, day, instructions, last };
+        public enum weathers { none = 0, snow, rain, last };
         states state = states.day;
+        weathers currentWeather = (weathers)0;
+        int currentWeatherIndex = 0;
         states gameState = states.main1;
         Keys previousKey;
 
         ParticleSystem Stars = new Stars();
+        ParticleSystem Snow = new Snow();
+        ParticleSystem Rain = new Rain();
         ParticleSystem Fireworks = new Fireworks(new Vector3(0, GROUND_LEVEL, GROUND_LEVEL - 10));
         CollisionManager controller;
         
@@ -57,6 +62,8 @@ namespace JengaSimulator
 
             Stars.content = Content;
             Fireworks.content = Content;
+            Rain.content = Content;
+            Snow.content = Content;
           //  graphics.PreferredBackBufferWidth = 800;
           //  graphics.PreferredBackBufferHeight = 600;
             pressed = false;
@@ -74,6 +81,8 @@ namespace JengaSimulator
             base.Initialize();
 
             Stars.initialize();
+            Snow.initialize();
+            Rain.initialize();
             Fireworks.initialize();
         }
 
@@ -123,6 +132,7 @@ namespace JengaSimulator
             }
             else if (gameState == states.victory)
             {
+                currentWeather = weathers.none;
                 Fireworks.update(timer);
             }
 
@@ -133,6 +143,14 @@ namespace JengaSimulator
             }
             else
             {
+                if (currentWeather == weathers.snow)
+                {
+                    Snow.update(timer);
+                }
+                if (currentWeather == weathers.rain)
+                {
+                    Rain.update(timer);
+                }
                 //update whatever happens only in day time
             }
 
@@ -152,8 +170,24 @@ namespace JengaSimulator
             }
             else if (state == states.day)
             {
-                GraphicsDevice.Clear(Color.Blue);
-                //Add some rain-snow logic
+                //Add some rain-snow logic with sky and particles
+               // GraphicsDevice.Clear(Color.FromNonPremultiplied(150,150,175,255));
+                if (currentWeather == weathers.none)
+                {
+                    GraphicsDevice.Clear(Color.Blue);
+                }
+                else
+                {
+                    GraphicsDevice.Clear(Color.DarkBlue);
+                }
+                if (currentWeather == weathers.rain)
+                {
+                    Rain.draw(view, projection);
+                }
+                if (currentWeather == weathers.snow)
+                {
+                    Snow.draw(view, projection);
+                }
             }
             
             if (gameState == states.victory)
@@ -207,8 +241,10 @@ namespace JengaSimulator
                     spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "F/Shift + F toggle fireworks", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 145), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "B/Shift + B toggle Hand Bounding Boxes", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 165), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    
-                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 195), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "1/Shift + 1 toggle Rain", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 185), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "2/Shift + 2 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 205), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                   
+                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 235), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
             base.Draw(gameTime);
@@ -319,6 +355,25 @@ namespace JengaSimulator
                 keyboardState.IsKeyDown(Keys.LeftShift))
             {
                 gameState = states.victory;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D1))
+            {
+                currentWeather = weathers.rain;
+            }
+            if (keyboardState.IsKeyDown(Keys.D1) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                currentWeather = weathers.none;
+            }
+            if (keyboardState.IsKeyDown(Keys.D2))
+            {
+                currentWeather = weathers.snow;
+            }
+            if (keyboardState.IsKeyDown(Keys.D2) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                currentWeather = weathers.none;
             }
 
             if (gameState == states.main1)
