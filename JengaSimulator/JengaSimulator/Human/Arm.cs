@@ -32,8 +32,8 @@ namespace JengaSimulator.Human
 
         //Palm + fingers
         Matrix BoxWorld;
-        Block collisionBox;
-        List<Block> fingers;
+        public Block collisionBox;
+        public List<Block> fingers;
 
         //linear motion
         public Vector3 position;

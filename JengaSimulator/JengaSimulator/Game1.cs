@@ -19,10 +19,11 @@ namespace JengaSimulator
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        public static SystemState systemState;
+
         const float DEFAULT_CAMERA_DISTANCE = 75f;
         const float GROUND_LEVEL = -50f;
         GraphicsDeviceManager graphics;
-        Arm arm;
 
         SpriteBatch spriteBatch;
         SpriteFont font;
@@ -60,6 +61,8 @@ namespace JengaSimulator
           //  graphics.PreferredBackBufferWidth = 800;
           //  graphics.PreferredBackBufferHeight = 600;
             pressed = false;
+
+            systemState = SystemState.Idle;
         }
 
         /// <summary>
@@ -89,7 +92,6 @@ namespace JengaSimulator
             stick = Content.Load<Model>("ball");
             font = Content.Load<SpriteFont>("Score");
             smoke = Content.Load<Texture2D>("smoke");
-            arm = new Arm(Content);
             controller = new CollisionManager(Content);
         }
 
@@ -118,8 +120,7 @@ namespace JengaSimulator
             //Game state Updates
             if (gameState == states.play)
             {
-                arm.update(timer, keyboard);
-                controller.Update(timer);
+                controller.Update(timer, keyboard);
             }
             else if (gameState == states.victory)
             {
@@ -163,7 +164,6 @@ namespace JengaSimulator
             if (gameState == states.play || gameState == states.pause || gameState == states.instructions || gameState == states.victory)
             {
                 controller.Draw();
-                arm.draw();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(5, 5), Color.White);

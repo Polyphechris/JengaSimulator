@@ -102,7 +102,7 @@ namespace JengaSimulator
             d = d + w * time / 1000;
             velocity = velocity + totalA * time / 1000;
 
-            previousPosition = new Vector3(position.X, position.Y, position.Z);
+            //previousPosition = new Vector3(position.X, position.Y, position.Z);
             position = position + velocity * time/1000;
 
             world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(-offsetRotation) * 

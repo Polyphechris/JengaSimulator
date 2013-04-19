@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JengaSimulator.Human;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 namespace JengaSimulator
 {
@@ -14,13 +16,14 @@ namespace JengaSimulator
         Block Ground;
         Block platform;
         ContentManager Content;
+        Arm arm;
 
         public CollisionManager(ContentManager c)
         {
             Content = c;
             InitializeGround();
             InitializeTower();
-
+            arm = new Arm(Content);
         }
 
         private void InitializeGround()
@@ -54,23 +57,68 @@ namespace JengaSimulator
             //Blocks.Add(new Block(new Vector3(0, 10, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
         }
 
-        public void Update(float time)
+        public void Update(float time, KeyboardState keyboardState)
         {
-            foreach (Block b in Blocks)
+            arm.update(time, keyboardState);
+            if (Game1.systemState == SystemState.Idle)
             {
-                if (b.acceleration.X.Equals(float.NaN))
+                bool foundCollision = false;
+                foreach (Block finger in arm.fingers)
                 {
-                    b.color = Vector3.Zero;
+                    foreach (Block b in Blocks)
+                    {
+                        if (finger.Collides(b))
+                        {
+                            Game1.systemState = SystemState.Collision;
+                            foundCollision = true;
+                            break;
+                        }
+                    }
+
+                    if (foundCollision)
+                    {
+                        break;
+                    }
                 }
-                b.Update(time);
-                Collision(b, time);
             }
-            Ground.Update(time);
-            platform.Update(time);
+
+            if (Game1.systemState == SystemState.Collision)
+            {
+                foreach (Block b in Blocks)
+                {
+                    if (b.acceleration.X.Equals(float.NaN))
+                    {
+                        b.color = Vector3.Zero;
+                    }
+                    b.Update(time);
+                    Collision(b, time);
+                }
+                Ground.Update(time);
+                platform.Update(time);
+
+                bool changeState = false;
+                //check velocity of all blocks to see if they are no longer moving (collisions are all done)
+                foreach (Block b in Blocks)
+                {
+                    if (b.position.X != b.previousPosition.X &&
+                        b.position.Y != b.previousPosition.Y &&
+                        b.position.Z != b.previousPosition.Z)
+                    {
+                        changeState = true;
+                        break;
+                    }
+                }
+
+                if (changeState)
+                {
+                    Game1.systemState = SystemState.Idle;
+                }
+            }
         }
 
         public void Draw()
         {
+            arm.draw();
             foreach (Block b in Blocks)
             {
                 b.Draw();
