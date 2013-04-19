@@ -30,14 +30,14 @@ namespace JengaSimulator.Human
             d.Z = (float)Math.PI / 2;
             d.X = (float)Math.PI;
             hand.d.Z = -d.Z;
-            h.position = position + new Vector3(0,0,WRIST_LENGHT/2);
+            h.position = position + new Vector3(0,0,WRIST_LENGHT/2 + 3.25f);
         }
 
         public void update(float time)
         {
             d = d + w * time / 1000;
 
-            hand.position = position + new Vector3(0, 0, WRIST_LENGHT / 2);
+            hand.position = position + new Vector3(0, 0, WRIST_LENGHT / 2 + 3.25f);
             if (hand.d.X < 0) hand.w.Z = -w.Z;
             else hand.w.Z = w.Z;
             hand.update(time);

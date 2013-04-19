@@ -29,7 +29,7 @@ namespace JengaSimulator.Human
 
         public Hand()
         {
-            offset = new Vector3(0, 0, -3.75f);
+            offset = new Vector3(0, 0, -3.75f - 3);
             w = Vector3.Zero;
             d.Y = (float)Math.PI;
             alpha = 1f;
