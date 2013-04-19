@@ -69,7 +69,7 @@ namespace JengaSimulator
           //  graphics.PreferredBackBufferHeight = 600;
             pressed = false;
 
-            systemState = SystemState.Idle;
+            systemState = SystemState.Collision;
         }
 
         /// <summary>

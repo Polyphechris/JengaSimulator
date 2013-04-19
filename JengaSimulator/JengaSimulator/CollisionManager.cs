@@ -60,27 +60,27 @@ namespace JengaSimulator
         public void Update(float time, KeyboardState keyboardState)
         {
             arm.update(time, keyboardState);
-            if (Game1.systemState == SystemState.Idle)
+            bool foundCollision = false;
+            foreach (Block finger in arm.fingers)
             {
-                bool foundCollision = false;
-                foreach (Block finger in arm.fingers)
+                foreach (Block b in Blocks)
                 {
-                    foreach (Block b in Blocks)
-                    {
-                        if (finger.Collides(b))
-                        {
-                            Game1.systemState = SystemState.Collision;
-                            foundCollision = true;
-                            break;
-                        }
-                    }
-
-                    if (foundCollision)
+                    if (finger.Collides(b))
                     {
                         Game1.systemState = SystemState.Collision;
+                        foundCollision = true;
+                        b.ResolveCollision(finger);
                         break;
                     }
                 }
+            }
+
+            if (Game1.systemState == SystemState.Idle)
+            {
+                    if (foundCollision)
+                    {
+                        Game1.systemState = SystemState.Collision;
+                    }
             }
 
             if (Game1.systemState == SystemState.Collision)
@@ -93,6 +93,7 @@ namespace JengaSimulator
                     }
                     Collision(b, time);
                     b.Update(time);
+                    //UpdatePenetration(b);
                 }
                 Ground.Update(time);
                 platform.Update(time);
@@ -101,7 +102,7 @@ namespace JengaSimulator
                 //check velocity of all blocks to see if they are no longer moving (collisions are all done)
                 foreach (Block b in Blocks)
                 {
-                    if (b.velocity.Length() >= 0.7f)
+                    if (b.velocity.Length() >= 0.16f)
                     {
                         changeState = false;
                         break;
@@ -134,7 +135,7 @@ namespace JengaSimulator
                 {
                     if (b.Collides(b1))
                     {
-                        b.ResolveCollision(b1);
+                        //b.ResolveCollision(b1);
                         b1.ResolveCollision(b);
                     }
                 }
@@ -149,5 +150,23 @@ namespace JengaSimulator
             }
         }
         
+        private void UpdatePenetration(Block b)
+        {
+            foreach (Block b1 in Blocks)
+            {
+                if (b1 != b)
+                {
+                    if (b.Collides(b1))
+                    {
+                        if (b.previousPosition != Vector3.Zero &&
+                            b.previousVelocity != Vector3.Zero)
+                        {
+                            //b.position = b.previousPosition;
+                           // b.velocity = b.previousVelocity;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

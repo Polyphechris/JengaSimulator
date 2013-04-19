@@ -16,6 +16,7 @@ namespace JengaSimulator
         public Vector3 position;
         public Vector3 previousPosition;
         public Vector3 velocity;
+        public Vector3 previousVelocity;
         public Vector3 acceleration;
 
         //hack for rotation abotu an axis
@@ -91,10 +92,11 @@ namespace JengaSimulator
 
             w = w + a * time / 1000;
             d = d + w * time / 1000;
+            previousVelocity = new Vector3(velocity.X, velocity.Y, velocity.Z);
             velocity = velocity + totalA * time / 1000;
 
             previousPosition = new Vector3(position.X, position.Y, position.Z);
-            position = position + velocity * time/1000;
+            position = position + velocity * time / 1000;
 
             world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(-offsetRotation) * 
                 Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(offsetRotation) * 
@@ -159,52 +161,55 @@ namespace JengaSimulator
                 float wallFront = block.position.Z + block.scale.Z;
                 float wallBack = block.position.Z - block.scale.Z;
 
-                if (previousPosition != Vector3.Zero)
-                {
-                    block.position = block.previousPosition;
-                }
-
                 Vector4 newImpulse = Vector4.Zero;
-                //float magnitude = velocity.Length();
-                float magnitude = velocity.Length();
+                float magnitude = 1f;
 
                 if (block.isStatic || block.resting)
                 {
                     magnitude = -acceleration.Y;
                     forces.Add(new Vector3(0, 1 * magnitude, 0));
-                    velocity = Vector3.Zero;
-                    //resting = true;
+                    velocity.Y = -velocity.Y * 0.01f;
+                    resting = true;
+                }
+
+                if (onHand)
+                {
+                    magnitude = 3f;
+                }
+                else 
+                { 
+                    magnitude = 1f; 
                 }
 
                 if (blockRight >= wallRight && blockLeft <= wallRight)
                 {
                     newImpulse = new Vector4(1, 0, 0, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * block.velocity.X * magnitude);
                 }
                 if (blockLeft <= wallLeft && blockRight >= wallLeft)
                 {
                     newImpulse = new Vector4(-1, 0, 0, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * -block.velocity.X * magnitude);
                 }
                 if (blockTop >= wallTop && blockBottom <= wallTop)
                 {
                     newImpulse = new Vector4(0, 1, 0, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * -block.velocity.Y * magnitude);
                 }
                 if (blockTop >= wallBottom && blockBottom <= wallBottom)
                 {
                     newImpulse = new Vector4(0, -1, 0, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * block.velocity.Y * magnitude);
                 }
                 if (blockFront >= wallFront && blockBack <= wallFront)
                 {
                     newImpulse = new Vector4(0, 0, 1, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * -block.velocity.Z * magnitude);
                 }
                 if (blockFront >= wallBack && blockBack <= wallBack)
                 {
                     newImpulse = new Vector4(0, 0, -1, 0);
-                    impulses.Add(newImpulse * magnitude);
+                    impulses.Add(newImpulse * block.velocity.Z * magnitude);
                 }
             }
         }
