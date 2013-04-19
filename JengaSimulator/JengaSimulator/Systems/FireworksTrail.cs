@@ -7,6 +7,7 @@ namespace JengaSimulator.Systems
 {
     class FireworksTrail : ParticleSystem
     {
+        //Trail behind each rocket
         public FireworksTrail()
         { initialize(); }
         public override void initialize()

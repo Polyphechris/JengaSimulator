@@ -90,7 +90,7 @@ namespace JengaSimulator.Human
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    effect.AmbientLightColor = new Vector3(0.3f);
+                    effect.AmbientLightColor = new Vector3(0.55f);
                    // effect.SpecularColor = color;
                     effect.DiffuseColor = color;
                     //effect.EmissiveColor = color;

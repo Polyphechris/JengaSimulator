@@ -16,7 +16,7 @@ namespace JengaSimulator.Human
         static float MAX_LATTERAL = 10;
         static float MAX_DEEP = 20;
         static float MIN_DEEP = 10;
-        static float MIN_HEIGHT = -30;
+        static float MIN_HEIGHT = -28;
 
         //Hand angular Constraints
         static float MIN_THETA_Z = 0;
@@ -84,11 +84,11 @@ namespace JengaSimulator.Human
 
             hand = new Hand();
             hand.color = color;
-            hand.model = Content.Load<Model>("hand");
+            hand.model = Content.Load<Model>("hand1");
 
             wrist = new Wrist(hand);
             wrist.color = color;
-            wrist.model = Content.Load<Model>("wrist");
+            wrist.model = Content.Load<Model>("wrist1");
         }
 
         public void update(float time, KeyboardState keyboardState)
@@ -112,15 +112,15 @@ namespace JengaSimulator.Human
             wrist.position = position;
 
             collisionBox.velocity = velocity;
-            if (hand.d.X < 0) hand.w.Z = -wrist.w.Z;
-            else hand.w.Z = wrist.w.Z;
+            if (hand.d.X < 0) hand.w.Z = wrist.w.Z;
+            else hand.w.Z = -wrist.w.Z;
             collisionBox.w = hand.w;
             collisionBox.Update(time);
             foreach (Block b in fingers)
             {
                 b.velocity = velocity;
-                if (hand.d.X < 0) hand.w.Z = -wrist.w.Z;
-                else hand.w.Z = wrist.w.Z;
+                if (hand.d.X < 0) hand.w.Z = wrist.w.Z;
+                else hand.w.Z = -wrist.w.Z;
                 b.w = hand.w;
                 b.Update(time);
             }

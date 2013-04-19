@@ -13,7 +13,7 @@ namespace JengaSimulator
     class CollisionManager
     {
         public List<Block> Blocks;
-        Block Ground;
+        public Block Ground;
         Block platform;
         ContentManager Content;
         Arm arm;

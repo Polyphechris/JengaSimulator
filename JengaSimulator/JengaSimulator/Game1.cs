@@ -30,7 +30,7 @@ namespace JengaSimulator
         //Optimal Spot for viewing env.
         //public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
         //Optimal SPot for viewing tower
-        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 0, 35), new Vector3(0, -35, -20), Vector3.UnitY);
+        public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 10, 25), new Vector3(0, -35, -20), Vector3.UnitY);
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
         public static Matrix rotation = Matrix.Identity;
 
@@ -102,6 +102,9 @@ namespace JengaSimulator
             font = Content.Load<SpriteFont>("Score");
             smoke = Content.Load<Texture2D>("smoke");
             controller = new CollisionManager(Content);
+            controller = new CollisionManager(Content); 
+            controller.Ground.specular = 10;
+            controller.Ground.color = new Vector3(0.6f);
         }
 
         /// <summary>
@@ -254,7 +257,7 @@ namespace JengaSimulator
         {
             if (keyboardState.IsKeyDown(Keys.X))
             {
-                view = Matrix.CreateLookAt(new Vector3(0, 0, DEFAULT_CAMERA_DISTANCE), Vector3.Zero, Vector3.UnitY);
+                view = Matrix.CreateLookAt(new Vector3(0, 10, 25), new Vector3(0, -35, -20), Vector3.UnitY);
             }
             if (keyboardState.IsKeyDown(Keys.I))
             {
@@ -360,20 +363,28 @@ namespace JengaSimulator
             if (keyboardState.IsKeyDown(Keys.D1))
             {
                 currentWeather = weathers.rain;
+                controller.Ground.specular = 100;
+                controller.Ground.color = new Vector3(0.5f);
             }
             if (keyboardState.IsKeyDown(Keys.D1) &&
                 keyboardState.IsKeyDown(Keys.LeftShift))
             {
                 currentWeather = weathers.none;
+                controller.Ground.specular = 10;
+                controller.Ground.color = new Vector3(0.6f);
             }
             if (keyboardState.IsKeyDown(Keys.D2))
             {
                 currentWeather = weathers.snow;
-            }
+                controller.Ground.specular = 1;
+                controller.Ground.color = new Vector3(0.9f);
+            }            
             if (keyboardState.IsKeyDown(Keys.D2) &&
                 keyboardState.IsKeyDown(Keys.LeftShift))
             {
                 currentWeather = weathers.none;
+                controller.Ground.specular = 10;
+                controller.Ground.color = new Vector3(0.6f);
             }
 
             if (gameState == states.main1)

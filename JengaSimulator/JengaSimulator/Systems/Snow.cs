@@ -11,6 +11,7 @@ namespace JengaSimulator.Systems
     {
         const int DROP_COUNT = 2000;
         const int DROP_HEIGHT = 80;
+        public int flurryness = 1;
         Random random1;   
 
         public override void initialize()
@@ -60,7 +61,10 @@ namespace JengaSimulator.Systems
         {
             foreach (Particle p in particles)
             {
+                Vector3 randomOffset = new Vector3(random1.Next(-flurryness, flurryness + 1), random1.Next(-flurryness, flurryness + 1), random1.Next(-flurryness, flurryness + 1));
+                p.velocity += randomOffset;
                 p.update(time);
+
                 if (p.position.Y < -40)
                 {
                     respawnParticle(p);
