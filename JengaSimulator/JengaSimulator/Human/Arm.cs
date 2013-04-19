@@ -12,7 +12,7 @@ namespace JengaSimulator.Human
     class Arm
     {
         //Hand linear Constraints
-        static float MAX_HEIGHT = -10;
+        static float MAX_HEIGHT = 0;
         static float MAX_LATTERAL = 10;
         static float MAX_DEEP = 27;
         static float MIN_DEEP = 10;

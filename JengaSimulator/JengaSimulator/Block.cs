@@ -208,12 +208,12 @@ namespace JengaSimulator
                 if (blockFront >= wallFront && blockBack <= wallFront)
                 {
                     newImpulse = new Vector4(0, 0, 1, 0);
-                    impulses.Add(newImpulse * -block.velocity.Z * magnitude);
+                    impulses.Add(newImpulse * block.velocity.Z * magnitude);
                 }
                 if (blockFront >= wallBack && blockBack <= wallBack)
                 {
                     newImpulse = new Vector4(0, 0, -1, 0);
-                    impulses.Add(newImpulse * block.velocity.Z * magnitude);
+                    impulses.Add(newImpulse * -block.velocity.Z * magnitude);
                 }
             }
         }
