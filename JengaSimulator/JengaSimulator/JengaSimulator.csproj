@@ -86,6 +86,8 @@
     <Compile Include="Systems\Fireworks.cs" />
     <Compile Include="Systems\FireworksBurst.cs" />
     <Compile Include="Systems\FireworksTrail.cs" />
+    <Compile Include="Systems\Rain.cs" />
+    <Compile Include="Systems\Snow.cs" />
     <Compile Include="Systems\Stars.cs" />
     <Compile Include="Systems\StarsShooting.cs" />
   </ItemGroup>
