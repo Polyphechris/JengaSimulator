@@ -140,11 +140,6 @@ namespace JengaSimulator
         {
             if (!isStatic)
             {
-                if (previousPosition != Vector3.Zero)
-                {
-                    block.position = block.previousPosition;
-                }
-
                 //Force can be one of 4 directions
                 //Figure out which face of the cube we hit
                  float blockRight = position.X + scale.X;
@@ -161,6 +156,10 @@ namespace JengaSimulator
                 float wallFront = block.position.Z + block.scale.Z;
                 float wallBack = block.position.Z - block.scale.Z;
 
+                if (previousPosition != Vector3.Zero)
+                {
+                    block.position = block.previousPosition;
+                }
 
                 Vector4 newImpulse = Vector4.Zero;
                 //float magnitude = velocity.Length();

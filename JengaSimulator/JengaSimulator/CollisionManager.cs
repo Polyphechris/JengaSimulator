@@ -97,15 +97,13 @@ namespace JengaSimulator
                 Ground.Update(time);
                 platform.Update(time);
 
-                bool changeState = false;
+                bool changeState = true;
                 //check velocity of all blocks to see if they are no longer moving (collisions are all done)
                 foreach (Block b in Blocks)
                 {
-                    if (b.position.X != b.previousPosition.X &&
-                        b.position.Y != b.previousPosition.Y &&
-                        b.position.Z != b.previousPosition.Z)
+                    if (b.velocity.Length() >= 0.7f)
                     {
-                        changeState = true;
+                        changeState = false;
                         break;
                     }
                 }
