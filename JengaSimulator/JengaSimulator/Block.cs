@@ -9,6 +9,8 @@ namespace JengaSimulator
 {
     public class Block
     {
+        const float KINETIC_FRICTION = 0.90f;
+        const float STATIC_FRICTION = 0.65f;
         Model model;
         Matrix world;
 
@@ -58,7 +60,7 @@ namespace JengaSimulator
             if (isStatic)
                 acceleration = Vector3.Zero;
             else
-                acceleration = new Vector3(0,-10,0);
+                acceleration = new Vector3(0,-10 / 0.95f,0);
 
             d = Vector3.Zero;
             a = Vector3.Zero;
@@ -146,6 +148,7 @@ namespace JengaSimulator
         {
             if (!isStatic)
             {
+                //block.resting = false;
                 //Force can be one of 4 directions
                 //Figure out which face of the cube we hit
                  float blockRight = position.X + scale.X;
@@ -262,6 +265,27 @@ namespace JengaSimulator
                 radians -= MathHelper.TwoPi;
             }
             return radians;
+        }
+
+        public void ApplyFriction(Vector3 aPreviousVelocity)
+        {
+            if (aPreviousVelocity.Length() < 0.025f)
+            {
+                velocity *= STATIC_FRICTION;
+                velocity.Y /= STATIC_FRICTION;
+            }
+            else
+            {
+                if (velocity.Length() > 0.005f)
+                {
+                    velocity *= KINETIC_FRICTION;
+                    velocity.Y /= KINETIC_FRICTION;
+                }
+                else
+                {
+                    velocity = Vector3.Zero;
+                }
+            }
         }
     }
 }
