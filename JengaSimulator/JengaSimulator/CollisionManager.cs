@@ -77,6 +77,7 @@ namespace JengaSimulator
 
                     if (foundCollision)
                     {
+                        Game1.systemState = SystemState.Collision;
                         break;
                     }
                 }
@@ -90,8 +91,8 @@ namespace JengaSimulator
                     {
                         b.color = Vector3.Zero;
                     }
-                    b.Update(time);
                     Collision(b, time);
+                    b.Update(time);
                 }
                 Ground.Update(time);
                 platform.Update(time);

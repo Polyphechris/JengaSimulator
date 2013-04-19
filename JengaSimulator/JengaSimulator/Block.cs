@@ -39,8 +39,6 @@ namespace JengaSimulator
 
         Vector3[][][] vertex;
 
-        Block restingBlock;
-
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
             onHand = false;
@@ -70,15 +68,6 @@ namespace JengaSimulator
 
         public void Update(float time)
         {
-            //if (restingBlock != null)
-            //{
-            //    while (this.Collides(restingBlock))
-            //    {
-            //        position.Y += 0.001f;
-            //        world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(d.X, d.Y, d.Z) * Matrix.CreateTranslation(position);
-            //    }
-            //}
-
             Vector3 totalA = acceleration;
             foreach (Vector3 f in forces)
             {
@@ -102,7 +91,7 @@ namespace JengaSimulator
             d = d + w * time / 1000;
             velocity = velocity + totalA * time / 1000;
 
-            //previousPosition = new Vector3(position.X, position.Y, position.Z);
+            previousPosition = new Vector3(position.X, position.Y, position.Z);
             position = position + velocity * time/1000;
 
             world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(-offsetRotation) * 
@@ -149,10 +138,13 @@ namespace JengaSimulator
 
         public void ResolveCollision(Block block)
         {
-            previousPosition = new Vector3(position.X, position.Y, position.Z);
-
             if (!isStatic)
             {
+                if (previousPosition != Vector3.Zero)
+                {
+                    block.position = block.previousPosition;
+                }
+
                 //Force can be one of 4 directions
                 //Figure out which face of the cube we hit
                  float blockRight = position.X + scale.X;
@@ -171,6 +163,7 @@ namespace JengaSimulator
 
 
                 Vector4 newImpulse = Vector4.Zero;
+                //float magnitude = velocity.Length();
                 float magnitude = velocity.Length();
 
                 if (block.isStatic || block.resting)
@@ -179,12 +172,7 @@ namespace JengaSimulator
                     forces.Add(new Vector3(0, 1 * magnitude, 0));
                     velocity = Vector3.Zero;
                     //resting = true;
-                    if (restingBlock == null)
-                    {
-                        restingBlock = block;
-                    }
                 }
-                //magnitude = velocity.Length() + 1;
 
                 if (blockRight >= wallRight && blockLeft <= wallRight)
                 {
