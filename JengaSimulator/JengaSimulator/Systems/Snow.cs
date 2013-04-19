@@ -36,7 +36,7 @@ namespace JengaSimulator.Systems
 
                 Model m = this.content.Load<Model>("star");
                 newParticle.Initialize(m, new Vector3((float)posX, (float)posY, (float)posZ), Vector3.Zero, new Vector3(0, -acc, 0),
-                    new Vector3(0.75f, 0.75f, 0.75f), 0.7f, new Vector3(0.1f * scaler), 1);
+                    new Vector3(0.87f, 0.87f, 0.87f), 0.87f, new Vector3(0.1f * scaler), 1);
                 particles.Add(newParticle);
             }
         }

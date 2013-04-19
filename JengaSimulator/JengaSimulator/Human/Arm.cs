@@ -14,7 +14,7 @@ namespace JengaSimulator.Human
         //Hand linear Constraints
         static float MAX_HEIGHT = -10;
         static float MAX_LATTERAL = 10;
-        static float MAX_DEEP = 20;
+        static float MAX_DEEP = 27;
         static float MIN_DEEP = 10;
         static float MIN_HEIGHT = -28;
 
@@ -51,14 +51,14 @@ namespace JengaSimulator.Human
         {
             showBoxes = false;
             alpha = 1f;
-            position = new Vector3(0, -20, 0);
+            position = new Vector3(0, -10, MAX_DEEP);
             Content = c;
             InitializeWrist();
             
-            collisionBox = new Block(position + new Vector3(0,0,-12), new Vector3(2.25f,1.25f, 3), 1, color, Content.Load<Model>("cube"),false);
+            collisionBox = new Block(position + new Vector3(0,0, -12), new Vector3(2.25f,1.25f, 3), 1, color, Content.Load<Model>("cube"),false);
             collisionBox.alpha = 0.4f;
             collisionBox.onHand = true;
-            collisionBox.offsetRotation = new Vector3(0, 0, 2.5f);
+            collisionBox.offsetRotation = new Vector3(0, 0, 1.5f);
 
             fingers = new List<Block>();
             Block b1 = new Block(position + new Vector3(-1.5f, 0, -17), new Vector3(0.5f, 0.5f, 3), 1, color, Content.Load<Model>("cube"), false);
@@ -145,11 +145,11 @@ namespace JengaSimulator.Human
             if (mouse.LeftButton == ButtonState.Pressed)
             {
                 if (position.Z > MIN_DEEP)
-                    velocity += new Vector3(0, 0, -10);
+                    velocity += new Vector3(0, 0, -15);
             }
             else if (position.Z < MAX_DEEP)
             {
-                velocity += new Vector3(0, 0, 10);
+                velocity += new Vector3(0, 0, 15);
             }
 
             if (mouse.RightButton == ButtonState.Pressed)
