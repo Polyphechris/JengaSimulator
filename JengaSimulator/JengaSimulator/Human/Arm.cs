@@ -44,7 +44,7 @@ namespace JengaSimulator.Human
         float weight;
         public Vector3 color;
         float alpha;
-        bool showBoxes;
+        static public bool showBoxes;
         ContentManager Content;
 
         public Arm(ContentManager c)
@@ -145,11 +145,11 @@ namespace JengaSimulator.Human
             if (mouse.LeftButton == ButtonState.Pressed)
             {
                 if (position.Z > MIN_DEEP)
-                    velocity += new Vector3(0, 0, -15);
+                    velocity += new Vector3(0, 0, -10);
             }
             else if (position.Z < MAX_DEEP)
             {
-                velocity += new Vector3(0, 0, 15);
+                velocity += new Vector3(0, 0, 10);
             }
 
             if (mouse.RightButton == ButtonState.Pressed)

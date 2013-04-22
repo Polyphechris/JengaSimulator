@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JengaSimulator.Human;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,10 +39,12 @@ namespace JengaSimulator
         bool isStatic;
         //on hand bounding boxes
         public bool onHand;
-        bool resting;
+        public bool resting;
         public float specular;
 
         Vector3[][][] vertex;
+
+        BoundingBox underneath;
 
         public Block(Vector3 p, Vector3 s, float mass, Vector3 c, Model m, bool i)
         {
@@ -80,6 +83,11 @@ namespace JengaSimulator
             }
             for (int i = 0; i < impulses.Count; ++i)
             {
+                if (impulses[i].Equals(Vector4.Zero))
+                {
+                    impulses.RemoveAt(i);
+                    continue;
+                }
                 impulses[i] += new Vector4(0, 0, 0, time);
                 if (impulses[i].W > 50)
                 {
@@ -105,11 +113,43 @@ namespace JengaSimulator
                 Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(offsetRotation) * 
                 Matrix.CreateTranslation(position);
 
+            if (!onHand)
+            {
+                world *= Game1.rotation;
+            }
+
             forces = new List<Vector3>();
         }
 
         public void Draw()
         {
+            if (Arm.showBoxes)
+            {
+                foreach (ModelMesh mesh in model.Meshes)
+                {
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                        effect.SpecularColor = color;
+                        effect.SpecularPower = specular;
+                        effect.DiffuseColor = Color.Red.ToVector3();
+                        effect.EmissiveColor = color;
+                        if (onHand)
+                        {
+                            effect.World = world;
+                        }
+                        else
+                        {
+                            effect.World = Matrix.CreateScale(1, 0.3f, 1) * world * Matrix.CreateTranslation(0, -scale.Y - 0.3f, 0);
+                        }
+                        effect.View = Game1.view;
+                        effect.Projection = Game1.projection;
+                        effect.Alpha = alpha;
+                    }
+                    mesh.Draw();
+                }
+            }
+            
             foreach (ModelMesh mesh in model.Meshes)
             {
                 foreach (BasicEffect effect in mesh.Effects)
@@ -125,7 +165,7 @@ namespace JengaSimulator
                     }
                     else
                     {
-                        effect.World = world * Game1.rotation;
+                        effect.World = world;
                     }
                     effect.View = Game1.view;
                     effect.Projection = Game1.projection;
@@ -138,6 +178,15 @@ namespace JengaSimulator
         public bool Collides(Block b1)
         {
             if(UpdateBoundingBox(model, world).Intersects(UpdateBoundingBox(b1.model, b1.world)))
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        public bool IsResting(Block b1)
+        {
+            if (UpdateBoundingBox(model, Matrix.CreateScale(0.9f) * world * Matrix.CreateTranslation(0, -scale.Y - 0.3f, 0)).Intersects(UpdateBoundingBox(b1.model, b1.world)))
             {
                 return true;
             }
@@ -168,21 +217,22 @@ namespace JengaSimulator
                 Vector4 newImpulse = Vector4.Zero;
                 float magnitude = 1f;
 
-                if (block.isStatic || block.resting)
+                if (block.isStatic)
                 {
                     magnitude = -acceleration.Y;
                     forces.Add(new Vector3(0, 1 * magnitude, 0));
                     velocity.Y = -velocity.Y * 0.01f;
                     resting = true;
+                    return;
                 }
 
-                if (onHand)
+                if (block.onHand)
                 {
-                    magnitude = 3f;
+                    magnitude = 1f;
                 }
                 else 
                 { 
-                    magnitude = 1f; 
+                    magnitude = 0.1f; 
                 }
 
                 if (blockRight >= wallRight && blockLeft <= wallRight)
@@ -199,6 +249,13 @@ namespace JengaSimulator
                 {
                     newImpulse = new Vector4(0, 1, 0, 0);
                     impulses.Add(newImpulse * -block.velocity.Y * magnitude);
+                    if (block.resting)
+                    {
+                        magnitude = -acceleration.Y;
+                        forces.Add(new Vector3(0, 1 * magnitude, 0));
+                        velocity.Y = -velocity.Y * 0.01f;
+                        resting = true;
+                    }
                 }
                 if (blockTop >= wallBottom && blockBottom <= wallBottom)
                 {

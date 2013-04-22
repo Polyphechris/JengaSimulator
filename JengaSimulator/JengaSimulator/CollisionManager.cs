@@ -77,10 +77,10 @@ namespace JengaSimulator
 
             if (Game1.systemState == SystemState.Idle)
             {
-                    if (foundCollision)
-                    {
-                        Game1.systemState = SystemState.Collision;
-                    }
+                if (foundCollision)
+                {
+                    Game1.systemState = SystemState.Collision;
+                }
             }
 
             if (Game1.systemState == SystemState.Collision)
@@ -92,9 +92,9 @@ namespace JengaSimulator
                         b.color = Vector3.Zero;
                     }
                     Collision(b, time);
-                    b.Update(time);
+                    UpdatePenetration(b);
                     b.ApplyFriction(b.previousVelocity);
-                    //UpdatePenetration(b);
+                    b.Update(time);
                 }
                 Ground.Update(time);
                 platform.Update(time);
@@ -130,17 +130,26 @@ namespace JengaSimulator
 
         private void Collision(Block b, float time)
         {
+            bool resting = false;
+
             foreach (Block b1 in Blocks)
             {
                 if (b1 != b)
                 {
                     if (b.Collides(b1))
                     {
-                        //b.ResolveCollision(b1);
-                        b1.ResolveCollision(b);
+                        b.ResolveCollision(b1);
+                        if (b.IsResting(b1))
+                        {
+                            resting = true;
+                        }
+                        //b1.ResolveCollision(b);
                     }
                 }
             }
+
+            b.resting = resting;
+
             if (b.Collides(Ground))
             {
                 b.ResolveCollision(Ground);
@@ -162,8 +171,9 @@ namespace JengaSimulator
                         if (b.previousPosition != Vector3.Zero &&
                             b.previousVelocity != Vector3.Zero)
                         {
-                            //b.position = b.previousPosition;
-                           // b.velocity = b.previousVelocity;
+                           //b.position = b.previousPosition;
+                           //b1.position = b1.previousPosition;
+                           //b.velocity = b.previousVelocity;
                         }
                     }
                 }
