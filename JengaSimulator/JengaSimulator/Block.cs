@@ -314,7 +314,7 @@ namespace JengaSimulator
 
             if (!Game1.linearMotion)
             {
-                impulsesR.Add(new Vector4(I, 0));
+                impulsesR.Add(new Vector4(I/10, 0));
             }
         }
 
@@ -399,7 +399,7 @@ namespace JengaSimulator
                 }
                 else
                 {
-                    velocity = Vector3.Zero;
+                    w = Vector3.Zero;
                 }
             }
         }
