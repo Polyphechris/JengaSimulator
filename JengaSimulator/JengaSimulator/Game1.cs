@@ -20,6 +20,7 @@ namespace JengaSimulator
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         public static SystemState systemState;
+        public static bool resetWithOneBlock = false;
 
         const float DEFAULT_CAMERA_DISTANCE = 75f;
         const float GROUND_LEVEL = -50f;
@@ -278,6 +279,16 @@ namespace JengaSimulator
         {
             if (keyboardState.IsKeyDown(Keys.X))
             {
+                resetWithOneBlock = false;
+                controller = new CollisionManager(Content);
+                controller.Ground.specular = 10;
+                controller.Ground.color = new Vector3(0.6f);
+                view = Matrix.CreateLookAt(new Vector3(0, 10, 25), new Vector3(0, -35, -20), Vector3.UnitY);
+            }
+            if (keyboardState.IsKeyDown(Keys.X) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                resetWithOneBlock = true;
                 controller = new CollisionManager(Content);
                 controller.Ground.specular = 10;
                 controller.Ground.color = new Vector3(0.6f);

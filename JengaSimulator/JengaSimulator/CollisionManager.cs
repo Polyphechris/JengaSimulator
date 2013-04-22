@@ -39,22 +39,30 @@ namespace JengaSimulator
             float blockWidth = 1f/3f * blockLength;
 
             Blocks = new List<Block>();
-            Blocks.Add(new Block(new Vector3(0, -14, blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -14, -blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -14, 0), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(-blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -6, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, -6, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(3, -2, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(-3, -2, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, 2, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, 2, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(3, 6, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(-3, 6, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, 10, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
-            Blocks.Add(new Block(new Vector3(0, 10, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+
+            if (Game1.resetWithOneBlock)
+            {
+                Blocks.Add(new Block(new Vector3(0, -14, blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            }
+            else
+            {
+                Blocks.Add(new Block(new Vector3(0, -14, blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, -14, -blockWidth * 2), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, -14, 0), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(-blockWidth * 2, -10, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, -6, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, -6, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(3, -2, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(-3, -2, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, 2, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, 2, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(3, 6, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(-3, 6, 0), new Vector3(blockWidth, blockHeight, blockLength), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, 10, 3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+                Blocks.Add(new Block(new Vector3(0, 10, -3), new Vector3(blockLength, blockHeight, blockWidth), 1, new Vector3(0.7f, 0.4f, 0.1f), Content.Load<Model>("cube"), false));
+            }
         }
 
         public void Update(float time, KeyboardState keyboardState)
