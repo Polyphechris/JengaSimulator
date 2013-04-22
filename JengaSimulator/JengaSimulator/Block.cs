@@ -27,6 +27,8 @@ namespace JengaSimulator
 
         public Vector3 scale;
         List<Vector4> impulses;
+        List<Vector4> impulsesR;
+
         List<Vector3> forces;
         float weight;
         public Vector3 color;
@@ -69,6 +71,7 @@ namespace JengaSimulator
             a = Vector3.Zero;
             w = Vector3.Zero;
             impulses = new List<Vector4>();
+            impulsesR = new List<Vector4>();
             forces = new List<Vector3>();
 
             world = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(WrapAngle(d.X), WrapAngle(d.Y), WrapAngle(d.Z)) * Matrix.CreateTranslation(position);
@@ -100,8 +103,29 @@ namespace JengaSimulator
                 }
             }
 
-            w = w + a * time / 1000;
+            Vector3 totalAlpha = a;
+            for (int i = 0; i < impulsesR.Count; ++i)
+            {
+                if (impulsesR[i].Equals(Vector4.Zero))
+                {
+                    impulsesR.RemoveAt(i);
+                    continue;
+                }
+                impulsesR[i] += new Vector4(0, 0, 0, time);
+                if (impulsesR[i].W > 50)
+                {
+                    impulsesR.RemoveAt(i);
+                }
+                else
+                {
+                    Vector3 J = new Vector3(impulsesR[i].X, impulsesR[i].Y, impulsesR[i].Z);
+                    totalAlpha += J;
+                }
+            }
+
+            w = w + totalAlpha * time / 1000;
             d = d + w * time / 1000;
+
             previousVelocity = new Vector3(velocity.X, velocity.Y, velocity.Z);
             if (!onHand)
                 velocity = velocity + totalA * time / 1000;
@@ -238,17 +262,38 @@ namespace JengaSimulator
                 if (blockRight >= wallRight && blockLeft <= wallRight)
                 {
                     newImpulse = new Vector4(1, 0, 0, 0);
-                    impulses.Add(newImpulse * block.velocity.X * magnitude);
+                    // impulses.Add(newImpulse * block.velocity.X * magnitude);
+                    AddImpulse(block, newImpulse * block.velocity.X * magnitude);
                 }
                 if (blockLeft <= wallLeft && blockRight >= wallLeft)
                 {
                     newImpulse = new Vector4(-1, 0, 0, 0);
-                    impulses.Add(newImpulse * -block.velocity.X * magnitude);
+                    // impulses.Add(newImpulse * -block.velocity.X * magnitude);
+                    AddImpulse(block, newImpulse * -block.velocity.X * magnitude);
+                }
+                if (blockTop >= wallBottom && blockBottom <= wallBottom)
+                {
+                    newImpulse = new Vector4(0, -1, 0, 0);
+                    // impulses.Add(newImpulse * block.velocity.Y * magnitude);
+                    AddImpulse(block, newImpulse * block.velocity.Y * magnitude);
+                }
+                if (blockFront >= wallFront && blockBack <= wallFront)
+                {
+                    newImpulse = new Vector4(0, 0, 1, 0);
+                    // impulses.Add(newImpulse * block.velocity.Z * magnitude);
+                    AddImpulse(block, newImpulse * block.velocity.Z * magnitude);
+                }
+                if (blockFront >= wallBack && blockBack <= wallBack)
+                {
+                    newImpulse = new Vector4(0, 0, -1, 0);
+                    //impulses.Add(newImpulse * -block.velocity.Z * magnitude);
+                    AddImpulse(block, newImpulse * -block.velocity.Z * magnitude);
                 }
                 if (blockTop >= wallTop && blockBottom <= wallTop)
                 {
                     newImpulse = new Vector4(0, 1, 0, 0);
-                    impulses.Add(newImpulse * -block.velocity.Y * magnitude);
+                   // impulses.Add(newImpulse * -block.velocity.Y * magnitude);
+                    AddImpulse(block, newImpulse * -block.velocity.Y * magnitude);
                     if (block.resting)
                     {
                         magnitude = -acceleration.Y;
@@ -257,23 +302,22 @@ namespace JengaSimulator
                         resting = true;
                     }
                 }
-                if (blockTop >= wallBottom && blockBottom <= wallBottom)
-                {
-                    newImpulse = new Vector4(0, -1, 0, 0);
-                    impulses.Add(newImpulse * block.velocity.Y * magnitude);
-                }
-                if (blockFront >= wallFront && blockBack <= wallFront)
-                {
-                    newImpulse = new Vector4(0, 0, 1, 0);
-                    impulses.Add(newImpulse * block.velocity.Z * magnitude);
-                }
-                if (blockFront >= wallBack && blockBack <= wallBack)
-                {
-                    newImpulse = new Vector4(0, 0, -1, 0);
-                    impulses.Add(newImpulse * -block.velocity.Z * magnitude);
-                }
             }
         }
+
+        public void AddImpulse(Block collidingBlock, Vector4 force)
+        {
+            impulses.Add(force);
+            Vector3 R = collidingBlock.position - position;
+            Vector3 F = new Vector3(force.X, force.Y, force.Z);
+            Vector3 I = Vector3.Cross(R,F);
+
+            if (!Game1.linearMotion)
+            {
+                impulsesR.Add(new Vector4(I, 0));
+            }
+        }
+
 
         //Method obtained from online discussion boards at Stack Overflow
         //http://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
@@ -337,6 +381,21 @@ namespace JengaSimulator
                 {
                     velocity *= KINETIC_FRICTION;
                     velocity.Y /= KINETIC_FRICTION;
+                }
+                else
+                {
+                    velocity = Vector3.Zero;
+                }
+            }
+            if (w.Length() < 0.025f)
+            {
+                w *= STATIC_FRICTION;
+            }
+            else
+            {
+                if (w.Length() > 0.005f)
+                {
+                    w *= KINETIC_FRICTION;
                 }
                 else
                 {

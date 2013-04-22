@@ -33,6 +33,7 @@ namespace JengaSimulator
         public static Matrix view = Matrix.CreateLookAt(new Vector3(0, 20, 30), new Vector3(0, -40, -20), Vector3.UnitY);
         public static Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(60), 16 / 9, 1, 300);
         public static Matrix rotation = Matrix.Identity;
+        public static bool linearMotion;
 
         private Model ball;
         private Model stick;
@@ -68,6 +69,7 @@ namespace JengaSimulator
           //  graphics.PreferredBackBufferWidth = 800;
           //  graphics.PreferredBackBufferHeight = 600;
             pressed = false;
+            linearMotion = true;
 
             systemState = SystemState.Collision;
         }
@@ -217,8 +219,8 @@ namespace JengaSimulator
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(10, 5), Color.White);
-                    spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(10, 25), Color.White);
-                    spriteBatch.DrawString(font, "Menu(Space)", new Vector2(10, 50), Color.White);
+                    spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(10, 35), Color.White);
+                    spriteBatch.DrawString(font, "Menu(Space)", new Vector2(10, 75), Color.White);
                 spriteBatch.End();
             }
             if (gameState == states.pause)
@@ -240,7 +242,7 @@ namespace JengaSimulator
             } 
             if (gameState == states.instructions)
             {
-                int startInstruction = 95;
+                int startInstruction = 90;
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                      spriteBatch.Draw(smoke,
                         new Rectangle((int)(graphics.PreferredBackBufferWidth / 10), (int)(graphics.PreferredBackBufferHeight/10), 
@@ -260,12 +262,13 @@ namespace JengaSimulator
                     spriteBatch.DrawString(font, "B/Shift + B toggle Hand Bounding Boxes", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 165), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "1/Shift + 1 toggle Rain", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 185), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "2/Shift + 2 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 205), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "3/Shift + 3 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 225), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     
-                    spriteBatch.DrawString(font, "Left Click(Hold) Poke forward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 235), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(font, "Right Click + W/S Rotate Hand Up and Down", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 255), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(font, "Right Click + A/D Rotate Arm Left and Right", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 275), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Left Click(Hold) Poke forward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 255), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Right Click + W/S Rotate Hand Up and Down", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 275), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Right Click + A/D Rotate Arm Left and Right", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 295), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     
-                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 300), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 320), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
             base.Draw(gameTime);
@@ -379,6 +382,16 @@ namespace JengaSimulator
                 keyboardState.IsKeyDown(Keys.LeftShift))
             {
                 gameState = states.victory;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D3))
+            {
+                linearMotion = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.D3) &&
+                keyboardState.IsKeyDown(Keys.LeftShift))
+            {
+                linearMotion = false;
             }
 
             if (keyboardState.IsKeyDown(Keys.D1))
