@@ -102,7 +102,6 @@ namespace JengaSimulator
             font = Content.Load<SpriteFont>("Score");
             smoke = Content.Load<Texture2D>("smoke");
             controller = new CollisionManager(Content);
-            controller = new CollisionManager(Content); 
             controller.Ground.specular = 10;
             controller.Ground.color = new Vector3(0.6f);
         }
@@ -126,16 +125,17 @@ namespace JengaSimulator
             float timer = gameTime.ElapsedGameTime.Milliseconds;
 
             KeyboardState keyboard = Keyboard.GetState();
-            cameraMotion(keyboard);
             handleGameState(keyboard);
 
             //Game state Updates
-            if (gameState == states.play)
+            if (gameState == states.play || gameState == states.instructions)
             {
+                cameraMotion(keyboard);
                 controller.Update(timer, keyboard);
             }
             else if (gameState == states.victory)
             {
+                cameraMotion(keyboard);
                 currentWeather = weathers.none;
                 Fireworks.update(timer);
             }
@@ -218,6 +218,7 @@ namespace JengaSimulator
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "JENGA TIME!", new Vector2(10, 5), Color.White);
                     spriteBatch.DrawString(font, "Particles: " + Particle.particleCount.ToString(), new Vector2(10, 25), Color.White);
+                    spriteBatch.DrawString(font, "Menu(Space)", new Vector2(10, 50), Color.White);
                 spriteBatch.End();
             }
             if (gameState == states.pause)
@@ -225,7 +226,7 @@ namespace JengaSimulator
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
                     spriteBatch.DrawString(font, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 25, graphics.PreferredBackBufferHeight / 2), Color.White);
                     spriteBatch.DrawString(font, "(i)Instructions", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 2 + 30), Color.White);
-                    spriteBatch.Draw(smoke, new Vector2(0, 0), new Rectangle(0, 0, 2000, 2000), Color.FromNonPremultiplied(235, 235, 220, 75));
+                    spriteBatch.Draw(smoke, new Vector2(0, 0), new Rectangle(0, 0, 2000, 2000), Color.FromNonPremultiplied(200, 200, 200, 70));
                 spriteBatch.End();
             }
             if (gameState == states.main1)
@@ -239,28 +240,32 @@ namespace JengaSimulator
             } 
             if (gameState == states.instructions)
             {
-                int startInstruction = 105;
+                int startInstruction = 95;
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone);
-                    spriteBatch.DrawString(font, "INSTRUCTIONS", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 10 + 25), Color.White);
-                    spriteBatch.Draw(smoke,
+                     spriteBatch.Draw(smoke,
                         new Rectangle((int)(graphics.PreferredBackBufferWidth / 10), (int)(graphics.PreferredBackBufferHeight/10), 
                             (int)(graphics.PreferredBackBufferWidth - (graphics.PreferredBackBufferWidth / 5)),
                             (int)(graphics.PreferredBackBufferHeight - (graphics.PreferredBackBufferHeight / 5))),
                         new Rectangle(0,0,1000,1000), 
-                        Color.FromNonPremultiplied(235, 235, 220, 175));
+                        Color.FromNonPremultiplied(200, 200, 200, 205));
+                    spriteBatch.DrawString(font, "INSTRUCTIONS", new Vector2((graphics.PreferredBackBufferWidth / 2) - 65, graphics.PreferredBackBufferHeight / 10 + 25), Color.White);
                     spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 25), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 45), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 65), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "X to reset camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 85), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(font, "Z/C Rotate around tower", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 85), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Z/C Rotate around tower", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 105), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     
                     spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "F/Shift + F toggle fireworks", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 145), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "B/Shift + B toggle Hand Bounding Boxes", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 165), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "1/Shift + 1 toggle Rain", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 185), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "2/Shift + 2 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 205), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                   
-                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 235), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    
+                    spriteBatch.DrawString(font, "Left Click(Hold) Poke forward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 235), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Right Click + W/S Rotate Hand Up and Down", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 255), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "Right Click + A/D Rotate Arm Left and Right", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 275), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    
+                spriteBatch.DrawString(font, "Space Next/Pause", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 300), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
             base.Draw(gameTime);
@@ -270,6 +275,9 @@ namespace JengaSimulator
         {
             if (keyboardState.IsKeyDown(Keys.X))
             {
+                controller = new CollisionManager(Content);
+                controller.Ground.specular = 10;
+                controller.Ground.color = new Vector3(0.6f);
                 view = Matrix.CreateLookAt(new Vector3(0, 10, 25), new Vector3(0, -35, -20), Vector3.UnitY);
             }
             if (keyboardState.IsKeyDown(Keys.I))

@@ -10,7 +10,6 @@ namespace JengaSimulator
     public class Particle
     {
         public Model model;
-        public Texture2D texture;
 
         public Vector3 position;
         public Vector3 velocity;
@@ -19,7 +18,6 @@ namespace JengaSimulator
 
         public Vector3 size;
         public float alpha;
-        public float tolerance;
 
         private float age;
         private float lifespan;

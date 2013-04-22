@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="JengaSimulator.Block" Collapsed="true">
+    <Position X="17.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIwCEgIAABgAAgAAAQACIAACgAAQCASkBAwRAABIgCA=</HashCode>
+      <FileName>Block.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.CollisionManager" Collapsed="true">
+    <Position X="17.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEABAAAoAAAgAAAAAAAAABgAAAAAAAAAIAAAgAEAA=</HashCode>
+      <FileName>CollisionManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Game1" Collapsed="true">
+    <Position X="20.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AHcAkEAhAAAQAwEAAACAABAABAAAAIgEBQAgAABIAAQ=</HashCode>
+      <FileName>Game1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Particle">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAQQAAAIIAIAAAABAAAASAAAQQAIAMAAA=</HashCode>
+      <FileName>Particle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.ParticleSystem">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAACQIAAAsAAAAAAAEAAAAAAAEAAAAEAIA=</HashCode>
+      <FileName>ParticleSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Program" Collapsed="true">
+    <Position X="20.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Human.Arm" Collapsed="true">
+    <Position X="15.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAEgiEAgAKAAEiAAIAIgICAAAAgCSgAAQQACAMAEA=</HashCode>
+      <FileName>Human\Arm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Human.Hand" Collapsed="true">
+    <Position X="15.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAEgAAAAAAgAAAAAIAIgACAQAAAACEAQgRBAAMAQA=</HashCode>
+      <FileName>Human\Hand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Human.Wrist" Collapsed="true">
+    <Position X="15.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAEgAAIAIAACAAAAAACEAAgQAAAMAAA=</HashCode>
+      <FileName>Human\Wrist.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.Fireworks" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAABAAAAAAEAAAAAAAAAEBAAABQCAAAEAEA=</HashCode>
+      <FileName>Systems\Fireworks.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.FireworksBurst" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAEAAAAAAAAAABAAABAAAAAEAEA=</HashCode>
+      <FileName>Systems\FireworksBurst.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.FireworksTrail" Collapsed="true">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Systems\FireworksTrail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.Rain" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAEAAAAAAAgAAAAAAAAACAAEAAI=</HashCode>
+      <FileName>Systems\Rain.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.Snow" Collapsed="true">
+    <Position X="4.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAEAAAAAAAgAAAAAAAAACAQEAAI=</HashCode>
+      <FileName>Systems\Snow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.Stars" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAFAAI=</HashCode>
+      <FileName>Systems\Stars.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JengaSimulator.Systems.StarsShooting" Collapsed="true">
+    <Position X="4.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAJAAABQAAAAEAEA=</HashCode>
+      <FileName>Systems\StarsShooting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="JengaSimulator.SystemState">
+    <Position X="19.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>SystemState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
