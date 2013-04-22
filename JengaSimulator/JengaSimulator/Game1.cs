@@ -279,6 +279,7 @@ namespace JengaSimulator
         {
             if (keyboardState.IsKeyDown(Keys.X))
             {
+                systemState = SystemState.Collision;
                 resetWithOneBlock = false;
                 controller = new CollisionManager(Content);
                 controller.Ground.specular = 10;
@@ -288,6 +289,7 @@ namespace JengaSimulator
             if (keyboardState.IsKeyDown(Keys.X) &&
                 keyboardState.IsKeyDown(Keys.LeftShift))
             {
+                systemState = SystemState.Collision;
                 resetWithOneBlock = true;
                 controller = new CollisionManager(Content);
                 controller.Ground.specular = 10;
