@@ -255,7 +255,7 @@ namespace JengaSimulator
                     spriteBatch.DrawString(font, "Use W/A/S/D to rotate camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 25), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Use Up/Down/Left/Right to move camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 45), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Use Q/E to move forward and backward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 65), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(font, "X to reset camera", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 85), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "X/Shift + X to reset game with all blocks / with one block", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 85), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Z/C Rotate around tower", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 105), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     
                     spriteBatch.DrawString(font, "G/Shift + G toggle day time", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 125), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
@@ -263,7 +263,7 @@ namespace JengaSimulator
                     spriteBatch.DrawString(font, "B/Shift + B toggle Hand Bounding Boxes", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 165), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "1/Shift + 1 toggle Rain", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 185), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "2/Shift + 2 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 205), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(font, "3/Shift + 3 toggle Snow", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 225), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, "3/Shift + 3 toggle rotational forces", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 225), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     
                     spriteBatch.DrawString(font, "Left Click(Hold) Poke forward", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 255), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
                     spriteBatch.DrawString(font, "Right Click + W/S Rotate Hand Up and Down", new Vector2(graphics.PreferredBackBufferWidth / 9, startInstruction + 275), Color.White, 0f, Vector2.Zero, 0.55f, SpriteEffects.None, 0f);
