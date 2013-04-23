@@ -111,7 +111,7 @@ namespace JengaSimulator
                 //check velocity of all blocks to see if they are no longer moving (collisions are all done)
                 foreach (Block b in Blocks)
                 {
-                    if (b.velocity.Length() >= 0.16f)
+                    if (b.velocity.Length() >= 0.16f || !b.resting)
                     {
                         changeState = false;
                         break;
